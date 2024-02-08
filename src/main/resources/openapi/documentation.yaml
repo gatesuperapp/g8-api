@@ -4,7 +4,7 @@ info:
   description: "Application API"
   version: "1.0.0"
 servers:
-  - url: "http://0.0.0.0:8080"
+  - url: "http://127.0.0.1:8080"
 paths:
   /:
     get:
@@ -19,5 +19,75 @@ paths:
               examples:
                 Example#1:
                   value: "Hello World!"
+  /api/farmer/{id}:
+    get:
+      summary: "Get a farmer by id"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: A farmer id.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        "200":
+          description: "Successfully returned the requested farmer"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Farmer'
+        "404":
+          description: "No farmer found"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+  /api/farmer:
+    get:
+      summary: "Get all farmers"
+      responses:
+        "200":
+          description: "Successfully returned a list of farmers"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfFarmers'
+        "404":
+          description: "No farmers found"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+    post:
+      summary: Creates a farmer.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Farmer'
+      responses:
+        '201':
+          description: Created
 components:
   schemas:
+    ArrayOfFarmers:
+      type: array
+      items:
+        $ref: '#/components/schemas/Farmer'
+    Farmer:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+

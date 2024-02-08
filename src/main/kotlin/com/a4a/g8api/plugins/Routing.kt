@@ -1,5 +1,8 @@
 package com.a4a.g8api.plugins
 
+import com.a4a.g8api.routes.createFarmer
+import com.a4a.g8api.routes.getFarmerById
+import com.a4a.g8api.routes.getFarmers
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -10,9 +13,9 @@ fun Application.configureRouting() {
             call.respondText("Hello World!")
         }
 
-        get("/{name}") {
-            val p = call.parameters["name"]
-            call.respondText("Hello $p!")
-        }
+        getFarmerById()
+        createFarmer()
+        getFarmers()
     }
+
 }
