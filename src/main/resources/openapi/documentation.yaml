@@ -68,10 +68,52 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Farmer'
+            example:
+              id: 1
+              firstName: 'Alice'
+              lastName: 'Fox'
+              email: 'afox@g8.org'
+              password: 'pwd'
       responses:
         '201':
           description: Created
+  /api/farmer/{id}/product:
+    get:
+      summary: "Get all products of the authenticated farmer"
+      security:
+        - bearerAuth: [ ]
+      responses:
+        "200":
+          description: "Successfully returned a list of products"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfProducts'
+              example:
+                id: 1
+  /api/auth:
+    post:
+      summary: Authenticate and get a JWT.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+            example:
+              email: 'afox@g8.org'
+              password: 'pwd'
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Authentication failed
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
   schemas:
     ArrayOfFarmers:
       type: array
@@ -89,5 +131,30 @@ components:
         email:
           type: string
         password:
+          type: string
+    ArrayOfProducts:
+      type: array
+      items:
+        $ref: '#/components/schemas/Product'
+    Product:
+      type: object
+      properties:
+        id:
+          type: Int
+        name:
+          type: string
+        quantity:
+          type: Int
+    AuthRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    ResponseBase:
+      type: object
+      properties:
+        Message:
           type: string
 
