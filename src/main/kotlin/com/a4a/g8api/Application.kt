@@ -13,12 +13,25 @@ import io.ktor.server.routing.*
 // More details https://ktor.io/docs/create-server.html#embedded
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
+data class DatabaseConfig(
+    val driverClass: String,
+    val url: String,
+    val user: String,
+    val password: String,
+    val maxPoolSize: Int
+)
+
+class AppConfig{
+    lateinit var databaseConfig: DatabaseConfig
+}
 
 fun Application.module() {
 
 
     val runEnv = environment.config.property("ktor.environment").getString()
     log.info("Running G8-api in $runEnv!!")
+
+//    DatabaseProvider.init()
 
     configureSecurity()
     configureSerialization()
