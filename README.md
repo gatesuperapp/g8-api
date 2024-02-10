@@ -1,5 +1,14 @@
 # G8-api
 
+# Included in this POC
+- [x] Simple Get and Post endpoints
+- [x] Authentication and Authorization using a JWT
+- [ ] Configuration file
+- [ ] Logging
+- [ ] Database Access
+- [ ] Swagger documentation
+
+
 - Best Devex is with Intellij Ultimate ~600 € / year
 - Low support for other IDEs
 - Swagger needs additional plugins to auto generate

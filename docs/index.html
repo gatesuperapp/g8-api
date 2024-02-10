@@ -716,7 +716,7 @@
   "type" : "object",
   "properties" : {
     "id" : {
-      "type" : "string"
+      "type" : "integer"
     },
     "firstName" : {
       "type" : "string"
@@ -736,13 +736,13 @@
   "type" : "object",
   "properties" : {
     "id" : {
-      "type" : "Int"
+      "type" : "integer"
     },
     "name" : {
       "type" : "string"
     },
     "quantity" : {
-      "type" : "Int"
+      "type" : "integer"
     }
   }
 };
@@ -1809,8 +1809,9 @@ public class DefaultApiExample {
 
 
         DefaultApi apiInstance = new DefaultApi();
+        Long id = 789; // Long | A farmer id.
         try {
-            ArrayOfProducts result = apiInstance.apiFarmerIdProductGet();
+            ArrayOfProducts result = apiInstance.apiFarmerIdProductGet(id);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#apiFarmerIdProductGet");
@@ -1827,8 +1828,9 @@ public class DefaultApiExample {
 
     public static void main(String[] args) {
         DefaultApi apiInstance = new DefaultApi();
+        Long id = 789; // Long | A farmer id.
         try {
-            ArrayOfProducts result = apiInstance.apiFarmerIdProductGet();
+            ArrayOfProducts result = apiInstance.apiFarmerIdProductGet(id);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#apiFarmerIdProductGet");
@@ -1843,12 +1845,13 @@ public class DefaultApiExample {
   </div> -->
                             <div class="tab-pane" id="examples-Default-apiFarmerIdProductGet-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+Long *id = 789; // A farmer id.
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
 // Get all products of the authenticated farmer
-[apiInstance apiFarmerIdProductGetWithCompletionHandler: 
-              ^(ArrayOfProducts output, NSError* error) {
+[apiInstance apiFarmerIdProductGetWith:id
+              completionHandler: ^(ArrayOfProducts output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -1865,6 +1868,8 @@ var defaultClient = ApplicationApi.ApiClient.instance;
 
 
 var api = new ApplicationApi.DefaultApi()
+var id = 789; // {{Long}} A farmer id.
+
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -1872,7 +1877,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.apiFarmerIdProductGet(callback);
+api.apiFarmerIdProductGet(id, callback);
 </code></pre>
                             </div>
 
@@ -1895,11 +1900,12 @@ namespace Example
 
 
             var apiInstance = new DefaultApi();
+            var id = 789;  // Long | A farmer id.
 
             try
             {
                 // Get all products of the authenticated farmer
-                ArrayOfProducts result = apiInstance.apiFarmerIdProductGet();
+                ArrayOfProducts result = apiInstance.apiFarmerIdProductGet(id);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -1918,9 +1924,10 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 $api_instance = new Swagger\Client\ApiDefaultApi();
+$id = 789; // Long | A farmer id.
 
 try {
-    $result = $api_instance->apiFarmerIdProductGet();
+    $result = $api_instance->apiFarmerIdProductGet($id);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling DefaultApi->apiFarmerIdProductGet: ', $e->getMessage(), PHP_EOL;
@@ -1935,9 +1942,10 @@ use WWW::SwaggerClient::DefaultApi;
 
 
 my $api_instance = WWW::SwaggerClient::DefaultApi->new();
+my $id = 789; # Long | A farmer id.
 
 eval { 
-    my $result = $api_instance->apiFarmerIdProductGet();
+    my $result = $api_instance->apiFarmerIdProductGet(id => $id);
     print Dumper($result);
 };
 if ($@) {
@@ -1955,10 +1963,11 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
+id = 789 # Long | A farmer id.
 
 try: 
     # Get all products of the authenticated farmer
-    api_response = api_instance.api_farmer_id_product_get()
+    api_response = api_instance.api_farmer_id_product_get(id)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling DefaultApi->apiFarmerIdProductGet: %s\n" % e)</code></pre>
@@ -1967,6 +1976,38 @@ except ApiException as e:
 
                           <h2>Parameters</h2>
 
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_apiFarmerIdProductGet_id">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Long
+                                                  </span>
+                                                      <span class="format">
+                                                          (int64)
+                                                      </span>
+                                  
+                                                      <div class="inner description">
+                                                          A farmer id.
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
 
 
 
@@ -1993,9 +2034,6 @@ except ApiException as e:
     "application/json" : {
       "schema" : {
         "$ref" : "#/components/schemas/ArrayOfProducts"
-      },
-      "example" : {
-        "id" : 1
       }
     }
   }
@@ -2022,6 +2060,14 @@ except ApiException as e:
                                   </div>
                                   <input id='responses-apiFarmerIdProductGet-200-schema-data' type='hidden' value=''></input>
                                 </div>
+                            </div>
+
+                            <h3> Status: 401 -  </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
                             </div>
 
                         </article>

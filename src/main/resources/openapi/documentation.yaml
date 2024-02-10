@@ -82,6 +82,16 @@ paths:
       summary: "Get all products of the authenticated farmer"
       security:
         - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: A farmer id.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+            default: 1
       responses:
         "200":
           description: "Successfully returned a list of products"
@@ -89,8 +99,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArrayOfProducts'
-              example:
-                id: 1
+        "401":
+          $ref: '#/components/responses/UnauthorizedError'
   /api/auth:
     post:
       summary: Authenticate and get a JWT.
@@ -114,6 +124,10 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
+      bearerFormat: JWT
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
   schemas:
     ArrayOfFarmers:
       type: array
@@ -123,7 +137,7 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: integer
         firstName:
           type: string
         lastName:
@@ -140,11 +154,11 @@ components:
       type: object
       properties:
         id:
-          type: Int
+          type: integer
         name:
           type: string
         quantity:
-          type: Int
+          type: integer
     AuthRequest:
       type: object
       properties:

@@ -15,7 +15,7 @@ fun Route.getFarmerById(){
         )
 
         val farmer =
-            farmerStorage.find { it.id == id } ?: return@get call.respondText(
+            farmerStorage.find { it.id == id.toInt() } ?: return@get call.respondText(
                 "No farmer with id $id",
                 status = HttpStatusCode.NotFound
             )
