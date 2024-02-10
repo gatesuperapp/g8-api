@@ -17,11 +17,12 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 fun Application.configureSecurity() {
-    // Please read the jwt property from the config file if you are using EngineMain
-    val jwtAudience = "g8"
-    val jwtDomain = "g8-api"
-    val jwtRealm = "G8"
-    val jwtSecret = "soon-to-be-secret"
+    //Using 'property' gets the property or fails
+    val jwtAudience = environment.config.property("jwt.audience").getString()
+    val jwtIssuer = environment.config.property("jwt.issuer").getString()
+    val jwtRealm = environment.config.property("jwt.realm").getString()
+    val jwtSecret = environment.config.property("jwt.secret").getString()
+
     authentication {
         jwt {
             realm = jwtRealm
@@ -29,7 +30,7 @@ fun Application.configureSecurity() {
                 JWT
                     .require(Algorithm.HMAC256(jwtSecret))
                     .withAudience(jwtAudience)
-                    .withIssuer(jwtDomain)
+                    .withIssuer(jwtIssuer)
                     .build()
             )
             validate { credential ->

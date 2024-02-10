@@ -28,16 +28,22 @@ fun Route.authenticate(){
                 status = HttpStatusCode.BadRequest
             )
 
+        val jwtAudience = this@authenticate.environment!!.config.property("jwt.audience").getString()
+        val jwtIssuer = this@authenticate.environment!!.config.property("jwt.issuer").getString()
+        val jwtSecret = this@authenticate.environment!!.config.property("jwt.secret").getString()
+
         val token = JWT.create()
-            .withAudience("g8")
-            .withIssuer("g8-api")
+            .withAudience(jwtAudience)
+            .withIssuer(jwtIssuer)
             .withClaim("username", farmer.email)
             .withClaim("firstname", farmer.firstName)
             .withClaim("lastname", farmer.lastName)
             .withClaim("id", farmer.id)
+            //Subscription expires in 1 day
             .withClaim("subexpiration", now().plusSeconds(3600*24))
+            //Token expires in 1 hour
             .withExpiresAt(now().plusSeconds(3600))
-            .sign(Algorithm.HMAC256("soon-to-be-secret"))
+            .sign(Algorithm.HMAC256(jwtSecret))
         call.respond(hashMapOf("token" to token))
 
     }

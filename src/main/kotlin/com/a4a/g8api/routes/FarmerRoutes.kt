@@ -38,6 +38,9 @@ fun Route.createFarmer(){
     post("/api/farmer"){
         val farmer = call.receive<Farmer>()
         farmerStorage.add(farmer)
+
+        call.application.log.info("Farmer - Created a new farmer, welcome to ${farmer.firstName} ${farmer.lastName} !")
+
         call.respondText("Account created", status = HttpStatusCode.Created)
     }
 }
