@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 info:
-  title: "Application API"
-  description: "Application API"
+  title: "G8 API"
+  description: "A demo for what could be an API for the G8 App"
   version: "1.0.0"
 servers:
   - url: "http://127.0.0.1:8080"
@@ -31,6 +31,7 @@ paths:
             type: integer
             format: int64
             minimum: 1
+            default: 1
       responses:
         "200":
           description: "Successfully returned the requested farmer"

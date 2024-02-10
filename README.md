@@ -11,7 +11,7 @@
 
 # How to test this app
 
-All endpoints can be called using Swagger.
+All endpoints can be called using Swagger. Swagger was also configured with default value so you can just execute the endpoints with little changes, except for the authentication step :)
 
 1. Configure gradle, on the root directory run :
    1. `chmod +x ./gradlew`
