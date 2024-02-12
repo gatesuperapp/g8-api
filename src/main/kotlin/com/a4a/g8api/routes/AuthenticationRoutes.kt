@@ -1,6 +1,7 @@
 package com.a4a.g8api.routes
 
 
+import com.a4a.g8api.database.FarmerService
 import com.a4a.g8api.models.AuthRequest
 import com.a4a.g8api.models.ResponseBase
 import com.a4a.g8api.models.farmerStorage
@@ -22,11 +23,11 @@ fun Route.authenticate(){
             call.respond(HttpStatusCode.BadRequest, ResponseBase("Email and password are required!"))
         }
 
-        val farmer =
-            farmerStorage.find { it.email == request.email && it.password == request.password } ?: return@post call.respondText(
-                "Wrong email or password",
-                status = HttpStatusCode.BadRequest
-            )
+        val farmerService = FarmerService()
+        val farmer = farmerService.allFarmers().find { it.email == request.email && it.password == request.password } ?: return@post call.respondText(
+            "Wrong email or password",
+            status = HttpStatusCode.BadRequest
+        )
 
         val jwtAudience = this@authenticate.environment!!.config.property("jwt.audience").getString()
         val jwtIssuer = this@authenticate.environment!!.config.property("jwt.issuer").getString()
