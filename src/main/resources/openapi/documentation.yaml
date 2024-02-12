@@ -19,14 +19,14 @@ paths:
               examples:
                 Example#1:
                   value: "Hello World!"
-  /api/farmer/{id}:
+  /api/user/{id}:
     get:
-      summary: "Get a farmer by id"
+      summary: "Get a user by id"
       parameters:
         - name: id
           in: path
           required: true
-          description: A farmer id.
+          description: A user id.
           schema:
             type: integer
             format: int64
@@ -34,41 +34,41 @@ paths:
             default: 1
       responses:
         "200":
-          description: "Successfully returned the requested farmer"
+          description: "Successfully returned the requested user"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Farmer'
+                $ref: '#/components/schemas/User'
         "404":
-          description: "No farmer found"
+          description: "No user found"
           content:
             text/plain:
               schema:
                 type: "string"
-  /api/farmer:
+  /api/user:
     get:
-      summary: "Get all farmers"
+      summary: "Get all users"
       responses:
         "200":
-          description: "Successfully returned a list of farmers"
+          description: "Successfully returned a list of users"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArrayOfFarmers'
+                $ref: '#/components/schemas/ArrayOfUsers'
         "404":
-          description: "No farmers found"
+          description: "No users found"
           content:
             text/plain:
               schema:
                 type: "string"
     post:
-      summary: Creates a farmer.
+      summary: Creates a user.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Farmer'
+              $ref: '#/components/schemas/User'
             example:
               id: 1
               firstName: 'Alice'
@@ -78,16 +78,16 @@ paths:
       responses:
         '201':
           description: Created
-  /api/farmer/{id}/product:
+  /api/user/{id}/subscription:
     get:
-      summary: "Get all products of the authenticated farmer"
+      summary: "Get active subscription for the authenticated user"
       security:
         - bearerAuth: [ ]
       parameters:
         - name: id
           in: path
           required: true
-          description: A farmer id.
+          description: A user id.
           schema:
             type: integer
             format: int64
@@ -95,11 +95,11 @@ paths:
             default: 1
       responses:
         "200":
-          description: "Successfully returned a list of products"
+          description: "Successfully returned the current subscription"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArrayOfProducts'
+                $ref: '#/components/schemas/Subscription'
         "401":
           $ref: '#/components/responses/UnauthorizedError'
   /api/auth:
@@ -129,12 +129,16 @@ components:
   responses:
     UnauthorizedError:
       description: Access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   schemas:
-    ArrayOfFarmers:
+    ArrayOfUsers:
       type: array
       items:
-        $ref: '#/components/schemas/Farmer'
-    Farmer:
+        $ref: '#/components/schemas/User'
+    User:
       type: object
       properties:
         id:
@@ -147,19 +151,19 @@ components:
           type: string
         password:
           type: string
-    ArrayOfProducts:
+    ArrayOfSubscriptions:
       type: array
       items:
-        $ref: '#/components/schemas/Product'
-    Product:
+        $ref: '#/components/schemas/Subscription'
+    Subscription:
       type: object
       properties:
         id:
           type: integer
-        name:
+        productId:
           type: string
-        quantity:
-          type: integer
+        activeUntil:
+          type: string
     AuthRequest:
       type: object
       properties:
@@ -167,7 +171,7 @@ components:
           type: string
         password:
           type: string
-    ResponseBase:
+    ErrorResponse:
       type: object
       properties:
         Message:

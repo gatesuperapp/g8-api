@@ -1,7 +1,6 @@
 package com.a4a.g8api.database
 
-import com.a4a.g8api.AppConfig
-import com.a4a.g8api.models.Farmer
+import com.a4a.g8api.models.User
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -11,7 +10,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 This implementation was inspired by : https://github.com/JetBrains/Exposed/blob/main/samples/exposed-ktor/src/main/kotlin/plugins/UsersSchema.kt
 THe exposed repo is more helpful than the official documentation...
  */
-class FarmerService () {
+class UsersService () {
 
     val driverClassName = "org.h2.Driver"
     val jdbcURL = "jdbc:h2:file:./build/g8-db"
@@ -23,11 +22,11 @@ class FarmerService () {
 
         //Initialize the database with a single table
         transaction(database) {
-            SchemaUtils.create(Farmers)
+            SchemaUtils.create(Users)
         }
     }
 
-    object Farmers : Table() {
+    object Users : Table() {
         val id = integer("id").autoIncrement()
         val firstName = varchar("firstName", 128)
         val lastName = varchar("lastName", 1024)
@@ -42,31 +41,39 @@ class FarmerService () {
     suspend fun <T> dbQuery(block: suspend () -> T): T =
         newSuspendedTransaction(Dispatchers.IO) { block() }
 
-    private fun resultRowToFarmer(row: ResultRow) = Farmer(
-        id = row[Farmers.id],
-        firstName = row[Farmers.firstName],
-        lastName = row[Farmers.lastName],
-        email = row[Farmers.email],
-        password = row[Farmers.password]
+    private fun resultRowToUser(row: ResultRow) = User(
+        id = row[Users.id],
+        firstName = row[Users.firstName],
+        lastName = row[Users.lastName],
+        email = row[Users.email],
+        password = row[Users.password]
     )
 
-    suspend fun allFarmers(): List<Farmer> = dbQuery {
-        Farmers.selectAll().map(::resultRowToFarmer)
+    suspend fun allUsers(): List<User> = dbQuery {
+        Users.selectAll().map(::resultRowToUser)
     }
 
-    suspend fun farmerById(id: Int): Farmer? = dbQuery {
-        Farmers
-            .selectAll().where { Farmers.id eq id }
-            .map(::resultRowToFarmer)
+    suspend fun userById(id: Int): User? = dbQuery {
+        Users
+            .selectAll().where { Users.id eq id }
+            .map(::resultRowToUser)
             .singleOrNull()
     }
 
-    suspend fun createFarmer(farmer : Farmer): Int = dbQuery {
-        Farmers.insert {
-            it[lastName] = farmer.lastName
-            it[firstName] = farmer.firstName
-            it[email] = farmer.email
-            it[password] = farmer.password
-        }[Farmers.id]
+    suspend fun userByEmailAndPassword(email: String, password: String): User? = dbQuery {
+        Users
+            .selectAll().where { Users.email eq email }
+            .andWhere { Users.password eq password }
+            .map(::resultRowToUser)
+            .singleOrNull()
+    }
+
+    suspend fun createUser(user : User): Int = dbQuery {
+        Users.insert {
+            it[lastName] = user.lastName
+            it[firstName] = user.firstName
+            it[email] = user.email
+            it[password] = user.password
+        }[Users.id]
     }
 }

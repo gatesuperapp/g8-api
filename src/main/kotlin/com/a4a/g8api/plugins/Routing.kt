@@ -11,10 +11,10 @@ fun Application.configureRouting() {
             call.respondText("Hello World!")
         }
 
-        getFarmerById()
-        createFarmer()
-        getFarmers()
-        farmersProducts()
+        getUserById()
+        createUser()
+        getUsers()
+        usersSubscriptions()
         authenticate()
     }
 

@@ -689,16 +689,16 @@
   <script>
     // Script section to load models into a JS Var
     var defs = {}
-            defs["ArrayOfFarmers"] = {
+            defs["ArrayOfSubscriptions"] = {
   "type" : "array",
   "items" : {
-    "$ref" : "#/components/schemas/Farmer"
+    "$ref" : "#/components/schemas/Subscription"
   }
 };
-            defs["ArrayOfProducts"] = {
+            defs["ArrayOfUsers"] = {
   "type" : "array",
   "items" : {
-    "$ref" : "#/components/schemas/Product"
+    "$ref" : "#/components/schemas/User"
   }
 };
             defs["AuthRequest"] = {
@@ -712,7 +712,29 @@
     }
   }
 };
-            defs["Farmer"] = {
+            defs["ErrorResponse"] = {
+  "type" : "object",
+  "properties" : {
+    "Message" : {
+      "type" : "string"
+    }
+  }
+};
+            defs["Subscription"] = {
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "type" : "integer"
+    },
+    "productId" : {
+      "type" : "string"
+    },
+    "activeUntil" : {
+      "type" : "string"
+    }
+  }
+};
+            defs["User"] = {
   "type" : "object",
   "properties" : {
     "id" : {
@@ -728,28 +750,6 @@
       "type" : "string"
     },
     "password" : {
-      "type" : "string"
-    }
-  }
-};
-            defs["Product"] = {
-  "type" : "object",
-  "properties" : {
-    "id" : {
-      "type" : "integer"
-    },
-    "name" : {
-      "type" : "string"
-    },
-    "quantity" : {
-      "type" : "integer"
-    }
-  }
-};
-            defs["ResponseBase"] = {
-  "type" : "object",
-  "properties" : {
-    "Message" : {
       "type" : "string"
     }
   }
@@ -774,17 +774,17 @@
                     <li data-group="Default" data-name="apiAuthPost" class="">
                       <a href="#api-Default-apiAuthPost">apiAuthPost</a>
                     </li>
-                    <li data-group="Default" data-name="apiFarmerGet" class="">
-                      <a href="#api-Default-apiFarmerGet">apiFarmerGet</a>
+                    <li data-group="Default" data-name="apiUserGet" class="">
+                      <a href="#api-Default-apiUserGet">apiUserGet</a>
                     </li>
-                    <li data-group="Default" data-name="apiFarmerIdGet" class="">
-                      <a href="#api-Default-apiFarmerIdGet">apiFarmerIdGet</a>
+                    <li data-group="Default" data-name="apiUserIdGet" class="">
+                      <a href="#api-Default-apiUserIdGet">apiUserIdGet</a>
                     </li>
-                    <li data-group="Default" data-name="apiFarmerIdProductGet" class="">
-                      <a href="#api-Default-apiFarmerIdProductGet">apiFarmerIdProductGet</a>
+                    <li data-group="Default" data-name="apiUserIdSubscriptionGet" class="">
+                      <a href="#api-Default-apiUserIdSubscriptionGet">apiUserIdSubscriptionGet</a>
                     </li>
-                    <li data-group="Default" data-name="apiFarmerPost" class="">
-                      <a href="#api-Default-apiFarmerPost">apiFarmerPost</a>
+                    <li data-group="Default" data-name="apiUserPost" class="">
+                      <a href="#api-Default-apiUserPost">apiUserPost</a>
                     </li>
                     <li data-group="Default" data-name="rootGet" class="">
                       <a href="#api-Default-rootGet">rootGet</a>
@@ -1101,11 +1101,11 @@ except ApiException as e:
                         </article>
                       </div>
                       <hr>
-                    <div id="api-Default-apiFarmerGet">
-                      <article id="api-Default-apiFarmerGet-0" data-group="User" data-name="apiFarmerGet" data-version="0">
+                    <div id="api-Default-apiUserGet">
+                      <article id="api-Default-apiUserGet-0" data-group="User" data-name="apiUserGet" data-version="0">
                         <div class="pull-left">
-                          <h1>apiFarmerGet</h1>
-                          <p>Get all farmers</p>
+                          <h1>apiUserGet</h1>
+                          <p>Get all users</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -1113,31 +1113,31 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/farmer</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/user</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-apiFarmerGet-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerGet-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerGet-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiFarmerGet-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-apiFarmerGet-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerGet-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiFarmerGet-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-apiFarmerGet-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerGet-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerGet-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerGet-0-python">Python</a></li>
+                          <li class="active"><a href="#examples-Default-apiUserGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-apiUserGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-apiUserGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiUserGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-apiUserGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-apiUserGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiUserGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-apiUserGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-apiUserGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-apiUserGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-apiUserGet-0-python">Python</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-apiFarmerGet-0-curl">
+                          <div class="tab-pane active" id="examples-Default-apiUserGet-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
 -H "Accept: application/json,text/plain"\
-"http://127.0.0.1:8080/api/farmer"</code></pre>
+"http://127.0.0.1:8080/api/user"</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-Default-apiFarmerGet-0-java">
+                          <div class="tab-pane" id="examples-Default-apiUserGet-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
 import io.swagger.client.auth.*;
 import io.swagger.client.model.*;
@@ -1152,17 +1152,17 @@ public class DefaultApiExample {
         
         DefaultApi apiInstance = new DefaultApi();
         try {
-            ArrayOfFarmers result = apiInstance.apiFarmerGet();
+            ArrayOfUsers result = apiInstance.apiUserGet();
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiFarmerGet");
+            System.err.println("Exception when calling DefaultApi#apiUserGet");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-Default-apiFarmerGet-0-android">
+                          <div class="tab-pane" id="examples-Default-apiUserGet-0-android">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
 
 public class DefaultApiExample {
@@ -1170,26 +1170,26 @@ public class DefaultApiExample {
     public static void main(String[] args) {
         DefaultApi apiInstance = new DefaultApi();
         try {
-            ArrayOfFarmers result = apiInstance.apiFarmerGet();
+            ArrayOfUsers result = apiInstance.apiUserGet();
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiFarmerGet");
+            System.err.println("Exception when calling DefaultApi#apiUserGet");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-Default-apiFarmerGet-0-groovy">
+  <div class="tab-pane" id="examples-Default-apiUserGet-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-Default-apiFarmerGet-0-objc">
+                            <div class="tab-pane" id="examples-Default-apiUserGet-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Get all farmers
-[apiInstance apiFarmerGetWithCompletionHandler: 
-              ^(ArrayOfFarmers output, NSError* error) {
+// Get all users
+[apiInstance apiUserGetWithCompletionHandler: 
+              ^(ArrayOfUsers output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -1200,7 +1200,7 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerGet-0-javascript">
+                            <div class="tab-pane" id="examples-Default-apiUserGet-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var G8Api = require('g8_api');
 
 var api = new G8Api.DefaultApi()
@@ -1211,14 +1211,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.apiFarmerGet(callback);
+api.apiUserGet(callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Default-apiFarmerGet-0-angular">
+                            <!--<div class="tab-pane" id="examples-Default-apiUserGet-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-Default-apiFarmerGet-0-csharp">
+                            <div class="tab-pane" id="examples-Default-apiUserGet-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using IO.Swagger.Api;
@@ -1227,7 +1227,7 @@ using IO.Swagger.Model;
 
 namespace Example
 {
-    public class apiFarmerGetExample
+    public class apiUserGetExample
     {
         public void main()
         {
@@ -1236,13 +1236,13 @@ namespace Example
 
             try
             {
-                // Get all farmers
-                ArrayOfFarmers result = apiInstance.apiFarmerGet();
+                // Get all users
+                ArrayOfUsers result = apiInstance.apiUserGet();
                 Debug.WriteLine(result);
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling DefaultApi.apiFarmerGet: " + e.Message );
+                Debug.Print("Exception when calling DefaultApi.apiUserGet: " + e.Message );
             }
         }
     }
@@ -1250,22 +1250,22 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerGet-0-php">
+                            <div class="tab-pane" id="examples-Default-apiUserGet-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiDefaultApi();
 
 try {
-    $result = $api_instance->apiFarmerGet();
+    $result = $api_instance->apiUserGet();
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->apiFarmerGet: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling DefaultApi->apiUserGet: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerGet-0-perl">
+                            <div class="tab-pane" id="examples-Default-apiUserGet-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::DefaultApi;
@@ -1273,15 +1273,15 @@ use WWW::SwaggerClient::DefaultApi;
 my $api_instance = WWW::SwaggerClient::DefaultApi->new();
 
 eval { 
-    my $result = $api_instance->apiFarmerGet();
+    my $result = $api_instance->apiUserGet();
     print Dumper($result);
 };
 if ($@) {
-    warn "Exception when calling DefaultApi->apiFarmerGet: $@\n";
+    warn "Exception when calling DefaultApi->apiUserGet: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerGet-0-python">
+                            <div class="tab-pane" id="examples-Default-apiUserGet-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import swagger_client
@@ -1292,11 +1292,11 @@ from pprint import pprint
 api_instance = swagger_client.DefaultApi()
 
 try: 
-    # Get all farmers
-    api_response = api_instance.api_farmer_get()
+    # Get all users
+    api_response = api_instance.api_user_get()
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling DefaultApi->apiFarmerGet: %s\n" % e)</code></pre>
+    print("Exception when calling DefaultApi->apiUserGet: %s\n" % e)</code></pre>
                             </div>
                           </div>
 
@@ -1308,26 +1308,26 @@ except ApiException as e:
 
 
                           <h2>Responses</h2>
-                            <h3> Status: 200 - Successfully returned a list of farmers </h3>
+                            <h3> Status: 200 - Successfully returned a list of users </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-apiFarmerGet-200-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-apiUserGet-200-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-apiFarmerGet-200-schema">
-                                  <div id='responses-apiFarmerGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-apiUserGet-200-schema">
+                                  <div id='responses-apiUserGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Successfully returned a list of farmers",
+  "description" : "Successfully returned a list of users",
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/ArrayOfFarmers"
+        "$ref" : "#/components/schemas/ArrayOfUsers"
       }
     }
   }
@@ -1345,33 +1345,33 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-apiFarmerGet-200-schema-data').val(stringify(schema));
-                                        var result = $('#responses-apiFarmerGet-200-schema-200');
+                                        $('#responses-apiUserGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiUserGet-200-schema-200');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-apiFarmerGet-200-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-apiUserGet-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
-                            <h3> Status: 404 - No farmers found </h3>
+                            <h3> Status: 404 - No users found </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-apiFarmerGet-404-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-apiUserGet-404-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-apiFarmerGet-404-schema">
-                                  <div id='responses-apiFarmerGet-404-schema-404' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-apiUserGet-404-schema">
+                                  <div id='responses-apiUserGet-404-schema-404' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "No farmers found",
+  "description" : "No users found",
   "content" : {
     "text/plain" : {
       "schema" : {
@@ -1394,25 +1394,25 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-apiFarmerGet-404-schema-data').val(stringify(schema));
-                                        var result = $('#responses-apiFarmerGet-404-schema-404');
+                                        $('#responses-apiUserGet-404-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiUserGet-404-schema-404');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-apiFarmerGet-404-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-apiUserGet-404-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
                         </article>
                       </div>
                       <hr>
-                    <div id="api-Default-apiFarmerIdGet">
-                      <article id="api-Default-apiFarmerIdGet-0" data-group="User" data-name="apiFarmerIdGet" data-version="0">
+                    <div id="api-Default-apiUserIdGet">
+                      <article id="api-Default-apiUserIdGet-0" data-group="User" data-name="apiUserIdGet" data-version="0">
                         <div class="pull-left">
-                          <h1>apiFarmerIdGet</h1>
-                          <p>Get a farmer by id</p>
+                          <h1>apiUserIdGet</h1>
+                          <p>Get a user by id</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -1420,31 +1420,31 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/farmer/{id}</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/user/{id}</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-apiFarmerIdGet-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerIdGet-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerIdGet-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiFarmerIdGet-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-apiFarmerIdGet-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerIdGet-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiFarmerIdGet-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-apiFarmerIdGet-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerIdGet-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerIdGet-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerIdGet-0-python">Python</a></li>
+                          <li class="active"><a href="#examples-Default-apiUserIdGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-apiUserIdGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-apiUserIdGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiUserIdGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-apiUserIdGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-apiUserIdGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiUserIdGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-apiUserIdGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-apiUserIdGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-apiUserIdGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-apiUserIdGet-0-python">Python</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-apiFarmerIdGet-0-curl">
+                          <div class="tab-pane active" id="examples-Default-apiUserIdGet-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
 -H "Accept: application/json,text/plain"\
-"http://127.0.0.1:8080/api/farmer/{id}"</code></pre>
+"http://127.0.0.1:8080/api/user/{id}"</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-Default-apiFarmerIdGet-0-java">
+                          <div class="tab-pane" id="examples-Default-apiUserIdGet-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
 import io.swagger.client.auth.*;
 import io.swagger.client.model.*;
@@ -1458,48 +1458,48 @@ public class DefaultApiExample {
     public static void main(String[] args) {
         
         DefaultApi apiInstance = new DefaultApi();
-        Long id = 789; // Long | A farmer id.
+        Long id = 789; // Long | A user id.
         try {
-            Farmer result = apiInstance.apiFarmerIdGet(id);
+            User result = apiInstance.apiUserIdGet(id);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiFarmerIdGet");
+            System.err.println("Exception when calling DefaultApi#apiUserIdGet");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-Default-apiFarmerIdGet-0-android">
+                          <div class="tab-pane" id="examples-Default-apiUserIdGet-0-android">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
 
 public class DefaultApiExample {
 
     public static void main(String[] args) {
         DefaultApi apiInstance = new DefaultApi();
-        Long id = 789; // Long | A farmer id.
+        Long id = 789; // Long | A user id.
         try {
-            Farmer result = apiInstance.apiFarmerIdGet(id);
+            User result = apiInstance.apiUserIdGet(id);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiFarmerIdGet");
+            System.err.println("Exception when calling DefaultApi#apiUserIdGet");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-Default-apiFarmerIdGet-0-groovy">
+  <div class="tab-pane" id="examples-Default-apiUserIdGet-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-Default-apiFarmerIdGet-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Long *id = 789; // A farmer id.
+                            <div class="tab-pane" id="examples-Default-apiUserIdGet-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Long *id = 789; // A user id.
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Get a farmer by id
-[apiInstance apiFarmerIdGetWith:id
-              completionHandler: ^(Farmer output, NSError* error) {
+// Get a user by id
+[apiInstance apiUserIdGetWith:id
+              completionHandler: ^(User output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -1510,11 +1510,11 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerIdGet-0-javascript">
+                            <div class="tab-pane" id="examples-Default-apiUserIdGet-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var G8Api = require('g8_api');
 
 var api = new G8Api.DefaultApi()
-var id = 789; // {{Long}} A farmer id.
+var id = 789; // {{Long}} A user id.
 
 var callback = function(error, data, response) {
   if (error) {
@@ -1523,14 +1523,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.apiFarmerIdGet(id, callback);
+api.apiUserIdGet(id, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Default-apiFarmerIdGet-0-angular">
+                            <!--<div class="tab-pane" id="examples-Default-apiUserIdGet-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-Default-apiFarmerIdGet-0-csharp">
+                            <div class="tab-pane" id="examples-Default-apiUserIdGet-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using IO.Swagger.Api;
@@ -1539,23 +1539,23 @@ using IO.Swagger.Model;
 
 namespace Example
 {
-    public class apiFarmerIdGetExample
+    public class apiUserIdGetExample
     {
         public void main()
         {
 
             var apiInstance = new DefaultApi();
-            var id = 789;  // Long | A farmer id.
+            var id = 789;  // Long | A user id.
 
             try
             {
-                // Get a farmer by id
-                Farmer result = apiInstance.apiFarmerIdGet(id);
+                // Get a user by id
+                User result = apiInstance.apiUserIdGet(id);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling DefaultApi.apiFarmerIdGet: " + e.Message );
+                Debug.Print("Exception when calling DefaultApi.apiUserIdGet: " + e.Message );
             }
         }
     }
@@ -1563,40 +1563,40 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerIdGet-0-php">
+                            <div class="tab-pane" id="examples-Default-apiUserIdGet-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiDefaultApi();
-$id = 789; // Long | A farmer id.
+$id = 789; // Long | A user id.
 
 try {
-    $result = $api_instance->apiFarmerIdGet($id);
+    $result = $api_instance->apiUserIdGet($id);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->apiFarmerIdGet: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling DefaultApi->apiUserIdGet: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerIdGet-0-perl">
+                            <div class="tab-pane" id="examples-Default-apiUserIdGet-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::DefaultApi;
 
 my $api_instance = WWW::SwaggerClient::DefaultApi->new();
-my $id = 789; # Long | A farmer id.
+my $id = 789; # Long | A user id.
 
 eval { 
-    my $result = $api_instance->apiFarmerIdGet(id => $id);
+    my $result = $api_instance->apiUserIdGet(id => $id);
     print Dumper($result);
 };
 if ($@) {
-    warn "Exception when calling DefaultApi->apiFarmerIdGet: $@\n";
+    warn "Exception when calling DefaultApi->apiUserIdGet: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerIdGet-0-python">
+                            <div class="tab-pane" id="examples-Default-apiUserIdGet-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import swagger_client
@@ -1605,14 +1605,14 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
-id = 789 # Long | A farmer id.
+id = 789 # Long | A user id.
 
 try: 
-    # Get a farmer by id
-    api_response = api_instance.api_farmer_id_get(id)
+    # Get a user by id
+    api_response = api_instance.api_user_id_get(id)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling DefaultApi->apiFarmerIdGet: %s\n" % e)</code></pre>
+    print("Exception when calling DefaultApi->apiUserIdGet: %s\n" % e)</code></pre>
                             </div>
                           </div>
 
@@ -1628,7 +1628,7 @@ except ApiException as e:
                                   <td>
                                   
                                   
-                                      <div id="d2e199_apiFarmerIdGet_id">
+                                      <div id="d2e199_apiUserIdGet_id">
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
@@ -1639,7 +1639,7 @@ except ApiException as e:
                                                       </span>
                                   
                                                       <div class="inner description">
-                                                          A farmer id.
+                                                          A user id.
                                                       </div>
                                               </div>
                                                   <div class="inner required">
@@ -1656,26 +1656,26 @@ except ApiException as e:
 
 
                           <h2>Responses</h2>
-                            <h3> Status: 200 - Successfully returned the requested farmer </h3>
+                            <h3> Status: 200 - Successfully returned the requested user </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-apiFarmerIdGet-200-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-apiUserIdGet-200-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-apiFarmerIdGet-200-schema">
-                                  <div id='responses-apiFarmerIdGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-apiUserIdGet-200-schema">
+                                  <div id='responses-apiUserIdGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Successfully returned the requested farmer",
+  "description" : "Successfully returned the requested user",
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/Farmer"
+        "$ref" : "#/components/schemas/User"
       }
     }
   }
@@ -1693,33 +1693,33 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-apiFarmerIdGet-200-schema-data').val(stringify(schema));
-                                        var result = $('#responses-apiFarmerIdGet-200-schema-200');
+                                        $('#responses-apiUserIdGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiUserIdGet-200-schema-200');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-apiFarmerIdGet-200-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-apiUserIdGet-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
-                            <h3> Status: 404 - No farmer found </h3>
+                            <h3> Status: 404 - No user found </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-apiFarmerIdGet-404-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-apiUserIdGet-404-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-apiFarmerIdGet-404-schema">
-                                  <div id='responses-apiFarmerIdGet-404-schema-404' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-apiUserIdGet-404-schema">
+                                  <div id='responses-apiUserIdGet-404-schema-404' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "No farmer found",
+  "description" : "No user found",
   "content" : {
     "text/plain" : {
       "schema" : {
@@ -1742,25 +1742,25 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-apiFarmerIdGet-404-schema-data').val(stringify(schema));
-                                        var result = $('#responses-apiFarmerIdGet-404-schema-404');
+                                        $('#responses-apiUserIdGet-404-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiUserIdGet-404-schema-404');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-apiFarmerIdGet-404-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-apiUserIdGet-404-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
                         </article>
                       </div>
                       <hr>
-                    <div id="api-Default-apiFarmerIdProductGet">
-                      <article id="api-Default-apiFarmerIdProductGet-0" data-group="User" data-name="apiFarmerIdProductGet" data-version="0">
+                    <div id="api-Default-apiUserIdSubscriptionGet">
+                      <article id="api-Default-apiUserIdSubscriptionGet-0" data-group="User" data-name="apiUserIdSubscriptionGet" data-version="0">
                         <div class="pull-left">
-                          <h1>apiFarmerIdProductGet</h1>
-                          <p>Get all products of the authenticated farmer</p>
+                          <h1>apiUserIdSubscriptionGet</h1>
+                          <p>Get active subscription for the authenticated user</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -1768,32 +1768,32 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/farmer/{id}/product</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/user/{id}/subscription</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-apiFarmerIdProductGet-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerIdProductGet-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerIdProductGet-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiFarmerIdProductGet-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-apiFarmerIdProductGet-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerIdProductGet-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiFarmerIdProductGet-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-apiFarmerIdProductGet-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerIdProductGet-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerIdProductGet-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerIdProductGet-0-python">Python</a></li>
+                          <li class="active"><a href="#examples-Default-apiUserIdSubscriptionGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-apiUserIdSubscriptionGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-apiUserIdSubscriptionGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiUserIdSubscriptionGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-apiUserIdSubscriptionGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-apiUserIdSubscriptionGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiUserIdSubscriptionGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-apiUserIdSubscriptionGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-apiUserIdSubscriptionGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-apiUserIdSubscriptionGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-apiUserIdSubscriptionGet-0-python">Python</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-apiFarmerIdProductGet-0-curl">
+                          <div class="tab-pane active" id="examples-Default-apiUserIdSubscriptionGet-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
  -H "Authorization: Bearer [[accessToken]]"\
 -H "Accept: application/json"\
-"http://127.0.0.1:8080/api/farmer/{id}/product"</code></pre>
+"http://127.0.0.1:8080/api/user/{id}/subscription"</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-Default-apiFarmerIdProductGet-0-java">
+                          <div class="tab-pane" id="examples-Default-apiUserIdSubscriptionGet-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
 import io.swagger.client.auth.*;
 import io.swagger.client.model.*;
@@ -1809,49 +1809,49 @@ public class DefaultApiExample {
 
 
         DefaultApi apiInstance = new DefaultApi();
-        Long id = 789; // Long | A farmer id.
+        Long id = 789; // Long | A user id.
         try {
-            ArrayOfProducts result = apiInstance.apiFarmerIdProductGet(id);
+            Subscription result = apiInstance.apiUserIdSubscriptionGet(id);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiFarmerIdProductGet");
+            System.err.println("Exception when calling DefaultApi#apiUserIdSubscriptionGet");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-Default-apiFarmerIdProductGet-0-android">
+                          <div class="tab-pane" id="examples-Default-apiUserIdSubscriptionGet-0-android">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
 
 public class DefaultApiExample {
 
     public static void main(String[] args) {
         DefaultApi apiInstance = new DefaultApi();
-        Long id = 789; // Long | A farmer id.
+        Long id = 789; // Long | A user id.
         try {
-            ArrayOfProducts result = apiInstance.apiFarmerIdProductGet(id);
+            Subscription result = apiInstance.apiUserIdSubscriptionGet(id);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiFarmerIdProductGet");
+            System.err.println("Exception when calling DefaultApi#apiUserIdSubscriptionGet");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-Default-apiFarmerIdProductGet-0-groovy">
+  <div class="tab-pane" id="examples-Default-apiUserIdSubscriptionGet-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-Default-apiFarmerIdProductGet-0-objc">
+                            <div class="tab-pane" id="examples-Default-apiUserIdSubscriptionGet-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
-Long *id = 789; // A farmer id.
+Long *id = 789; // A user id.
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Get all products of the authenticated farmer
-[apiInstance apiFarmerIdProductGetWith:id
-              completionHandler: ^(ArrayOfProducts output, NSError* error) {
+// Get active subscription for the authenticated user
+[apiInstance apiUserIdSubscriptionGetWith:id
+              completionHandler: ^(Subscription output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -1862,13 +1862,13 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerIdProductGet-0-javascript">
+                            <div class="tab-pane" id="examples-Default-apiUserIdSubscriptionGet-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var G8Api = require('g8_api');
 var defaultClient = G8Api.ApiClient.instance;
 
 
 var api = new G8Api.DefaultApi()
-var id = 789; // {{Long}} A farmer id.
+var id = 789; // {{Long}} A user id.
 
 var callback = function(error, data, response) {
   if (error) {
@@ -1877,14 +1877,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.apiFarmerIdProductGet(id, callback);
+api.apiUserIdSubscriptionGet(id, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Default-apiFarmerIdProductGet-0-angular">
+                            <!--<div class="tab-pane" id="examples-Default-apiUserIdSubscriptionGet-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-Default-apiFarmerIdProductGet-0-csharp">
+                            <div class="tab-pane" id="examples-Default-apiUserIdSubscriptionGet-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using IO.Swagger.Api;
@@ -1893,24 +1893,24 @@ using IO.Swagger.Model;
 
 namespace Example
 {
-    public class apiFarmerIdProductGetExample
+    public class apiUserIdSubscriptionGetExample
     {
         public void main()
         {
 
 
             var apiInstance = new DefaultApi();
-            var id = 789;  // Long | A farmer id.
+            var id = 789;  // Long | A user id.
 
             try
             {
-                // Get all products of the authenticated farmer
-                ArrayOfProducts result = apiInstance.apiFarmerIdProductGet(id);
+                // Get active subscription for the authenticated user
+                Subscription result = apiInstance.apiUserIdSubscriptionGet(id);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling DefaultApi.apiFarmerIdProductGet: " + e.Message );
+                Debug.Print("Exception when calling DefaultApi.apiUserIdSubscriptionGet: " + e.Message );
             }
         }
     }
@@ -1918,42 +1918,42 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerIdProductGet-0-php">
+                            <div class="tab-pane" id="examples-Default-apiUserIdSubscriptionGet-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
 
 $api_instance = new Swagger\Client\ApiDefaultApi();
-$id = 789; // Long | A farmer id.
+$id = 789; // Long | A user id.
 
 try {
-    $result = $api_instance->apiFarmerIdProductGet($id);
+    $result = $api_instance->apiUserIdSubscriptionGet($id);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->apiFarmerIdProductGet: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling DefaultApi->apiUserIdSubscriptionGet: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerIdProductGet-0-perl">
+                            <div class="tab-pane" id="examples-Default-apiUserIdSubscriptionGet-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::DefaultApi;
 
 
 my $api_instance = WWW::SwaggerClient::DefaultApi->new();
-my $id = 789; # Long | A farmer id.
+my $id = 789; # Long | A user id.
 
 eval { 
-    my $result = $api_instance->apiFarmerIdProductGet(id => $id);
+    my $result = $api_instance->apiUserIdSubscriptionGet(id => $id);
     print Dumper($result);
 };
 if ($@) {
-    warn "Exception when calling DefaultApi->apiFarmerIdProductGet: $@\n";
+    warn "Exception when calling DefaultApi->apiUserIdSubscriptionGet: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerIdProductGet-0-python">
+                            <div class="tab-pane" id="examples-Default-apiUserIdSubscriptionGet-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import swagger_client
@@ -1963,14 +1963,14 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
-id = 789 # Long | A farmer id.
+id = 789 # Long | A user id.
 
 try: 
-    # Get all products of the authenticated farmer
-    api_response = api_instance.api_farmer_id_product_get(id)
+    # Get active subscription for the authenticated user
+    api_response = api_instance.api_user_id_subscription_get(id)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling DefaultApi->apiFarmerIdProductGet: %s\n" % e)</code></pre>
+    print("Exception when calling DefaultApi->apiUserIdSubscriptionGet: %s\n" % e)</code></pre>
                             </div>
                           </div>
 
@@ -1986,7 +1986,7 @@ except ApiException as e:
                                   <td>
                                   
                                   
-                                      <div id="d2e199_apiFarmerIdProductGet_id">
+                                      <div id="d2e199_apiUserIdSubscriptionGet_id">
                                           <div class="json-schema-view">
                                               <div class="primitive">
                                                   <span class="type">
@@ -1997,7 +1997,7 @@ except ApiException as e:
                                                       </span>
                                   
                                                       <div class="inner description">
-                                                          A farmer id.
+                                                          A user id.
                                                       </div>
                                               </div>
                                                   <div class="inner required">
@@ -2014,26 +2014,26 @@ except ApiException as e:
 
 
                           <h2>Responses</h2>
-                            <h3> Status: 200 - Successfully returned a list of products </h3>
+                            <h3> Status: 200 - Successfully returned the current subscription </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-apiFarmerIdProductGet-200-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-apiUserIdSubscriptionGet-200-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-apiFarmerIdProductGet-200-schema">
-                                  <div id='responses-apiFarmerIdProductGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-apiUserIdSubscriptionGet-200-schema">
+                                  <div id='responses-apiUserIdSubscriptionGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
-  "description" : "Successfully returned a list of products",
+  "description" : "Successfully returned the current subscription",
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/ArrayOfProducts"
+        "$ref" : "#/components/schemas/Subscription"
       }
     }
   }
@@ -2051,14 +2051,14 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-apiFarmerIdProductGet-200-schema-data').val(stringify(schema));
-                                        var result = $('#responses-apiFarmerIdProductGet-200-schema-200');
+                                        $('#responses-apiUserIdSubscriptionGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiUserIdSubscriptionGet-200-schema-200');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-apiFarmerIdProductGet-200-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-apiUserIdSubscriptionGet-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
@@ -2073,11 +2073,11 @@ except ApiException as e:
                         </article>
                       </div>
                       <hr>
-                    <div id="api-Default-apiFarmerPost">
-                      <article id="api-Default-apiFarmerPost-0" data-group="User" data-name="apiFarmerPost" data-version="0">
+                    <div id="api-Default-apiUserPost">
+                      <article id="api-Default-apiUserPost-0" data-group="User" data-name="apiUserPost" data-version="0">
                         <div class="pull-left">
-                          <h1>apiFarmerPost</h1>
-                          <p>Creates a farmer.</p>
+                          <h1>apiUserPost</h1>
+                          <p>Creates a user.</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -2085,31 +2085,31 @@ except ApiException as e:
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/farmer</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/user</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-apiFarmerPost-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerPost-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerPost-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiFarmerPost-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-apiFarmerPost-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerPost-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiFarmerPost-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-apiFarmerPost-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerPost-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerPost-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-apiFarmerPost-0-python">Python</a></li>
+                          <li class="active"><a href="#examples-Default-apiUserPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-apiUserPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-apiUserPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiUserPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-apiUserPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-apiUserPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiUserPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-apiUserPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-apiUserPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-apiUserPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-apiUserPost-0-python">Python</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-apiFarmerPost-0-curl">
+                          <div class="tab-pane active" id="examples-Default-apiUserPost-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
 -H "Content-Type: application/json"\
-"http://127.0.0.1:8080/api/farmer"</code></pre>
+"http://127.0.0.1:8080/api/user"</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-Default-apiFarmerPost-0-java">
+                          <div class="tab-pane" id="examples-Default-apiUserPost-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
 import io.swagger.client.auth.*;
 import io.swagger.client.model.*;
@@ -2123,52 +2123,52 @@ public class DefaultApiExample {
     public static void main(String[] args) {
         
         DefaultApi apiInstance = new DefaultApi();
-        Farmer body = {
+        User body = {
   "id" : 1,
   "firstName" : "Alice",
   "lastName" : "Fox",
   "email" : "afox@g8.org",
   "password" : "pwd"
-}; // Farmer | 
+}; // User | 
         try {
-            apiInstance.apiFarmerPost(body);
+            apiInstance.apiUserPost(body);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiFarmerPost");
+            System.err.println("Exception when calling DefaultApi#apiUserPost");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-Default-apiFarmerPost-0-android">
+                          <div class="tab-pane" id="examples-Default-apiUserPost-0-android">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
 
 public class DefaultApiExample {
 
     public static void main(String[] args) {
         DefaultApi apiInstance = new DefaultApi();
-        Farmer body = {
+        User body = {
   "id" : 1,
   "firstName" : "Alice",
   "lastName" : "Fox",
   "email" : "afox@g8.org",
   "password" : "pwd"
-}; // Farmer | 
+}; // User | 
         try {
-            apiInstance.apiFarmerPost(body);
+            apiInstance.apiUserPost(body);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiFarmerPost");
+            System.err.println("Exception when calling DefaultApi#apiUserPost");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-Default-apiFarmerPost-0-groovy">
+  <div class="tab-pane" id="examples-Default-apiUserPost-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-Default-apiFarmerPost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Farmer *body = {
+                            <div class="tab-pane" id="examples-Default-apiUserPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">User *body = {
   "id" : 1,
   "firstName" : "Alice",
   "lastName" : "Fox",
@@ -2178,8 +2178,8 @@ public class DefaultApiExample {
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Creates a farmer.
-[apiInstance apiFarmerPostWith:body
+// Creates a user.
+[apiInstance apiUserPostWith:body
               completionHandler: ^(NSError* error) {
                             if (error) {
                                 NSLog(@"Error: %@", error);
@@ -2188,7 +2188,7 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerPost-0-javascript">
+                            <div class="tab-pane" id="examples-Default-apiUserPost-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var G8Api = require('g8_api');
 
 var api = new G8Api.DefaultApi()
@@ -2198,7 +2198,7 @@ var body = {
   "lastName" : "Fox",
   "email" : "afox@g8.org",
   "password" : "pwd"
-}; // {{Farmer}} 
+}; // {{User}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -2207,14 +2207,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully.');
   }
 };
-api.apiFarmerPost(body, callback);
+api.apiUserPost(body, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Default-apiFarmerPost-0-angular">
+                            <!--<div class="tab-pane" id="examples-Default-apiUserPost-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-Default-apiFarmerPost-0-csharp">
+                            <div class="tab-pane" id="examples-Default-apiUserPost-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using IO.Swagger.Api;
@@ -2223,22 +2223,22 @@ using IO.Swagger.Model;
 
 namespace Example
 {
-    public class apiFarmerPostExample
+    public class apiUserPostExample
     {
         public void main()
         {
 
             var apiInstance = new DefaultApi();
-            var body = new Farmer(); // Farmer | 
+            var body = new User(); // User | 
 
             try
             {
-                // Creates a farmer.
-                apiInstance.apiFarmerPost(body);
+                // Creates a user.
+                apiInstance.apiUserPost(body);
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling DefaultApi.apiFarmerPost: " + e.Message );
+                Debug.Print("Exception when calling DefaultApi.apiUserPost: " + e.Message );
             }
         }
     }
@@ -2246,7 +2246,7 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerPost-0-php">
+                            <div class="tab-pane" id="examples-Default-apiUserPost-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
@@ -2257,33 +2257,33 @@ $body = {
   "lastName" : "Fox",
   "email" : "afox@g8.org",
   "password" : "pwd"
-}; // Farmer | 
+}; // User | 
 
 try {
-    $api_instance->apiFarmerPost($body);
+    $api_instance->apiUserPost($body);
 } catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->apiFarmerPost: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling DefaultApi->apiUserPost: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerPost-0-perl">
+                            <div class="tab-pane" id="examples-Default-apiUserPost-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::DefaultApi;
 
 my $api_instance = WWW::SwaggerClient::DefaultApi->new();
-my $body = WWW::SwaggerClient::Object::Farmer->new(); # Farmer | 
+my $body = WWW::SwaggerClient::Object::User->new(); # User | 
 
 eval { 
-    $api_instance->apiFarmerPost(body => $body);
+    $api_instance->apiUserPost(body => $body);
 };
 if ($@) {
-    warn "Exception when calling DefaultApi->apiFarmerPost: $@\n";
+    warn "Exception when calling DefaultApi->apiUserPost: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiFarmerPost-0-python">
+                            <div class="tab-pane" id="examples-Default-apiUserPost-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import swagger_client
@@ -2298,13 +2298,13 @@ body = {
   "lastName" : "Fox",
   "email" : "afox@g8.org",
   "password" : "pwd"
-} # Farmer | 
+} # User | 
 
 try: 
-    # Creates a farmer.
-    api_instance.api_farmer_post(body)
+    # Creates a user.
+    api_instance.api_user_post(body)
 except ApiException as e:
-    print("Exception when calling DefaultApi->apiFarmerPost: %s\n" % e)</code></pre>
+    print("Exception when calling DefaultApi->apiUserPost: %s\n" % e)</code></pre>
                             </div>
                           </div>
 
@@ -2328,7 +2328,7 @@ except ApiException as e:
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/Farmer"
+        "$ref" : "#/components/schemas/User"
       },
       "example" : {
         "id" : 1,
@@ -2353,12 +2353,12 @@ except ApiException as e:
                                   }
                                 
                                   var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-                                  var result = $('#d2e199_apiFarmerPost_body');
+                                  var result = $('#d2e199_apiUserPost_body');
                                   result.empty();
                                   result.append(view.render());
                                 });
                                 </script>
-                                <div id="d2e199_apiFarmerPost_body"></div>
+                                <div id="d2e199_apiUserPost_body"></div>
                                 </td>
                                 </tr>
                             </table>

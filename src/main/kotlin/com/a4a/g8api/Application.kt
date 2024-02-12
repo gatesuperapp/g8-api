@@ -31,8 +31,6 @@ fun Application.module() {
     val runEnv = environment.config.property("ktor.environment").getString()
     log.info("Running G8-api in $runEnv!!")
 
-//    DatabaseProvider.init()
-
     configureSecurity()
     configureSerialization()
     configureHTTP()
