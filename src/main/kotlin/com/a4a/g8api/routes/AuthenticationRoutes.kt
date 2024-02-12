@@ -34,9 +34,6 @@ fun Route.authenticate(){
         val token = JWT.create()
             .withAudience(jwtAudience)
             .withIssuer(jwtIssuer)
-            .withClaim("username", user.email)
-            .withClaim("firstname", user.firstName)
-            .withClaim("lastname", user.lastName)
             .withClaim("id", user.id)
             //Token expires in 1 hour
             .withExpiresAt(now().plusSeconds(3600))
