@@ -4,6 +4,10 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### G8 ###
+db/
+.azure
+
 ### STS ###
 .apt_generated
 .classpath

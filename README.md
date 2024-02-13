@@ -54,3 +54,6 @@ We are using h2 db for now.
 **Positive**
 - Documentation is nice but not always obvious (ex : Looking for how to use the config file does not explain all the requirements)
 - For the Native server, Ktor provides a logger that prints everything to the standard output
+
+# TODO 
+- [ ] Configure a linter : [Ktlint](https://github.com/pinterest/ktlint)

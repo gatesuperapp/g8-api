@@ -13,7 +13,7 @@ THe exposed repo is more helpful than the official documentation...
 class UsersService () {
 
     val driverClassName = "org.h2.Driver"
-    val jdbcURL = "jdbc:h2:file:./build/g8-db"
+    val jdbcURL = "jdbc:h2:file:./db/g8-db"
     val database = Database.connect(jdbcURL, driverClassName)
 
     //The init block will execute immediately after the primary constructor.

@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.com.intellij.openapi.vfs.StandardFileSystems.jar
 
 val ktor_version: String by project
 val kotlin_version: String by project
@@ -42,3 +43,12 @@ dependencies {
     implementation("com.h2database:h2:2.2.224")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
 }
+
+
+ktor {
+    fatJar {
+        archiveFileName.set("g8-.jar")
+    }
+}
+
+
