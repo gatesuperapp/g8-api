@@ -3,6 +3,8 @@ import org.jetbrains.kotlin.com.intellij.openapi.vfs.StandardFileSystems.jar
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
+val koinKtor_version: String by project
+val hikaricp_version: String by project
 
 plugins {
     kotlin("jvm") version "1.9.22"
@@ -42,12 +44,18 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:0.47.0")
     implementation("com.h2database:h2:2.2.224")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+    // Dependency Injection
+    //Enables external provisioning of component dependencies, fostering modularity and flexibility in development.
+    implementation("io.insert-koin:koin-ktor:$koinKtor_version")
+    // Connection pooling
+    //Facilitates connection pooling, optimizing performance and resource usage by reusing connections instead of creating new ones for each operation.
+    implementation("com.zaxxer:HikariCP:$hikaricp_version")
 }
 
 
 ktor {
     fatJar {
-        archiveFileName.set("g8-.jar")
+        archiveFileName.set("g8-api.jar")
     }
 }
 

@@ -1,5 +1,6 @@
 package com.a4a.g8api.routes
 
+import com.a4a.g8api.database.IUsersService
 import com.a4a.g8api.database.UsersService
 import com.a4a.g8api.models.AuthRequest
 import com.a4a.g8api.models.ErrorResponse
@@ -13,7 +14,7 @@ import io.ktor.server.routing.*
 
 import java.time.Instant.now
 
-fun Route.authenticate(){
+fun Route.authenticate(usersService: IUsersService){
     post("api/auth"){
         val request = call.receive<AuthRequest>()
 
@@ -21,8 +22,7 @@ fun Route.authenticate(){
             call.respond(HttpStatusCode.BadRequest, ErrorResponse("Email and password are required!"))
         }
 
-        val userService = UsersService()
-        val user = userService.userByEmailAndPassword (request.email, request.password ) ?: return@post call.respondText(
+        val user = usersService.userByEmailAndPassword (request.email, request.password ) ?: return@post call.respondText(
             "Wrong email or password",
             status = HttpStatusCode.BadRequest
         )

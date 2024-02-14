@@ -57,3 +57,6 @@ We are using h2 db for now.
 
 # TODO 
 - [ ] Configure a linter : [Ktlint](https://github.com/pinterest/ktlint)
+- [ ] Monitoring endpoint calls with a [log plugin](https://ktor.io/docs/events.html#custom-events)
+- [ ] Dependency injection with [Koin](https://insert-koin.io/docs/reference/koin-ktor/ktor/)
+- [ ] Database migrations with [Flyway](https://flywaydb.org/)
