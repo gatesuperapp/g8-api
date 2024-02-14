@@ -4,7 +4,10 @@ info:
   description: "A demo for what could be an API for the G8 App"
   version: "1.0.0"
 servers:
+  - url: "https://g8-api-4zjqp.ondigitalocean.app"
+    description: Dev on DigitalOcean
   - url: "http://127.0.0.1:8080"
+    description: Local server
 paths:
   /:
     get:
