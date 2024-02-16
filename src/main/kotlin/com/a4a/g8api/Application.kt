@@ -27,13 +27,14 @@ class AppConfig{
 
 fun Application.module() {
 
-
     val runEnv = environment.config.property("ktor.environment").getString()
     log.info("Running G8-api in $runEnv!!")
 
     configureSecurity()
     configureSerialization()
     configureHTTP()
+    configureDependencyInjection()
+    configureDatabase()
     configureRouting()
 
     routing {
