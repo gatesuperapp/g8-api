@@ -720,6 +720,34 @@
     }
   }
 };
+            defs["SignInResponseViewModel"] = {
+  "type" : "object",
+  "properties" : {
+    "authToken" : {
+      "type" : "string"
+    },
+    "refreshToken" : {
+      "type" : "string"
+    }
+  }
+};
+            defs["SignupRequestViewModel"] = {
+  "type" : "object",
+  "properties" : {
+    "firstName" : {
+      "type" : "string"
+    },
+    "lastName" : {
+      "type" : "string"
+    },
+    "email" : {
+      "type" : "string"
+    },
+    "password" : {
+      "type" : "string"
+    }
+  }
+};
             defs["Subscription"] = {
   "type" : "object",
   "properties" : {
@@ -771,8 +799,11 @@
             <li class="nav-fixed nav-header active" data-group="_"><a href="#api-_">API Summary</a></li>
 
                   <li class="nav-header" data-group="Default"><a href="#api-Default">API Methods - Default</a></li>
-                    <li data-group="Default" data-name="apiAuthPost" class="">
-                      <a href="#api-Default-apiAuthPost">apiAuthPost</a>
+                    <li data-group="Default" data-name="apiLoginPost" class="">
+                      <a href="#api-Default-apiLoginPost">apiLoginPost</a>
+                    </li>
+                    <li data-group="Default" data-name="apiSignupPost" class="">
+                      <a href="#api-Default-apiSignupPost">apiSignupPost</a>
                     </li>
                     <li data-group="Default" data-name="apiUserGet" class="">
                       <a href="#api-Default-apiUserGet">apiUserGet</a>
@@ -782,9 +813,6 @@
                     </li>
                     <li data-group="Default" data-name="apiUserIdSubscriptionGet" class="">
                       <a href="#api-Default-apiUserIdSubscriptionGet">apiUserIdSubscriptionGet</a>
-                    </li>
-                    <li data-group="Default" data-name="apiUserPost" class="">
-                      <a href="#api-Default-apiUserPost">apiUserPost</a>
                     </li>
                     <li data-group="Default" data-name="rootGet" class="">
                       <a href="#api-Default-rootGet">rootGet</a>
@@ -810,10 +838,10 @@
         <div id="sections">
                 <section id="api-Default">
                   <h1>Default</h1>
-                    <div id="api-Default-apiAuthPost">
-                      <article id="api-Default-apiAuthPost-0" data-group="User" data-name="apiAuthPost" data-version="0">
+                    <div id="api-Default-apiLoginPost">
+                      <article id="api-Default-apiLoginPost-0" data-group="User" data-name="apiLoginPost" data-version="0">
                         <div class="pull-left">
-                          <h1>apiAuthPost</h1>
+                          <h1>apiLoginPost</h1>
                           <p>Authenticate and get a JWT.</p>
                         </div>
                         <div class="pull-right"></div>
@@ -822,31 +850,32 @@
                         <p class="marked"></p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/auth</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/login</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-apiAuthPost-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-apiAuthPost-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-apiAuthPost-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiAuthPost-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-apiAuthPost-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-apiAuthPost-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiAuthPost-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-apiAuthPost-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-apiAuthPost-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-apiAuthPost-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-apiAuthPost-0-python">Python</a></li>
+                          <li class="active"><a href="#examples-Default-apiLoginPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-apiLoginPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-apiLoginPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiLoginPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-apiLoginPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-apiLoginPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiLoginPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-apiLoginPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-apiLoginPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-apiLoginPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-apiLoginPost-0-python">Python</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-apiAuthPost-0-curl">
+                          <div class="tab-pane active" id="examples-Default-apiLoginPost-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+-H "Accept: application/json"\
 -H "Content-Type: application/json"\
-"https://g8-api-4zjqp.ondigitalocean.app/api/auth"</code></pre>
+"https://g8-api-4zjqp.ondigitalocean.app/api/login"</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-Default-apiAuthPost-0-java">
+                          <div class="tab-pane" id="examples-Default-apiLoginPost-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
 import io.swagger.client.auth.*;
 import io.swagger.client.model.*;
@@ -865,16 +894,17 @@ public class DefaultApiExample {
   "password" : "pwd"
 }; // AuthRequest | 
         try {
-            apiInstance.apiAuthPost(body);
+            SignInResponseViewModel result = apiInstance.apiLoginPost(body);
+            System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiAuthPost");
+            System.err.println("Exception when calling DefaultApi#apiLoginPost");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-Default-apiAuthPost-0-android">
+                          <div class="tab-pane" id="examples-Default-apiLoginPost-0-android">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
 
 public class DefaultApiExample {
@@ -886,19 +916,20 @@ public class DefaultApiExample {
   "password" : "pwd"
 }; // AuthRequest | 
         try {
-            apiInstance.apiAuthPost(body);
+            SignInResponseViewModel result = apiInstance.apiLoginPost(body);
+            System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiAuthPost");
+            System.err.println("Exception when calling DefaultApi#apiLoginPost");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-Default-apiAuthPost-0-groovy">
+  <div class="tab-pane" id="examples-Default-apiLoginPost-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-Default-apiAuthPost-0-objc">
+                            <div class="tab-pane" id="examples-Default-apiLoginPost-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">AuthRequest *body = {
   "email" : "afox@g8.org",
   "password" : "pwd"
@@ -907,8 +938,11 @@ public class DefaultApiExample {
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
 // Authenticate and get a JWT.
-[apiInstance apiAuthPostWith:body
-              completionHandler: ^(NSError* error) {
+[apiInstance apiLoginPostWith:body
+              completionHandler: ^(SignInResponseViewModel output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -916,7 +950,7 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiAuthPost-0-javascript">
+                            <div class="tab-pane" id="examples-Default-apiLoginPost-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var G8Api = require('g8_api');
 
 var api = new G8Api.DefaultApi()
@@ -929,17 +963,17 @@ var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.apiAuthPost(body, callback);
+api.apiLoginPost(body, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Default-apiAuthPost-0-angular">
+                            <!--<div class="tab-pane" id="examples-Default-apiLoginPost-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-Default-apiAuthPost-0-csharp">
+                            <div class="tab-pane" id="examples-Default-apiLoginPost-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using IO.Swagger.Api;
@@ -948,7 +982,7 @@ using IO.Swagger.Model;
 
 namespace Example
 {
-    public class apiAuthPostExample
+    public class apiLoginPostExample
     {
         public void main()
         {
@@ -959,11 +993,12 @@ namespace Example
             try
             {
                 // Authenticate and get a JWT.
-                apiInstance.apiAuthPost(body);
+                SignInResponseViewModel result = apiInstance.apiLoginPost(body);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling DefaultApi.apiAuthPost: " + e.Message );
+                Debug.Print("Exception when calling DefaultApi.apiLoginPost: " + e.Message );
             }
         }
     }
@@ -971,7 +1006,7 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiAuthPost-0-php">
+                            <div class="tab-pane" id="examples-Default-apiLoginPost-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
@@ -982,14 +1017,15 @@ $body = {
 }; // AuthRequest | 
 
 try {
-    $api_instance->apiAuthPost($body);
+    $result = $api_instance->apiLoginPost($body);
+    print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->apiAuthPost: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling DefaultApi->apiLoginPost: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiAuthPost-0-perl">
+                            <div class="tab-pane" id="examples-Default-apiLoginPost-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::DefaultApi;
@@ -998,14 +1034,15 @@ my $api_instance = WWW::SwaggerClient::DefaultApi->new();
 my $body = WWW::SwaggerClient::Object::AuthRequest->new(); # AuthRequest | 
 
 eval { 
-    $api_instance->apiAuthPost(body => $body);
+    my $result = $api_instance->apiLoginPost(body => $body);
+    print Dumper($result);
 };
 if ($@) {
-    warn "Exception when calling DefaultApi->apiAuthPost: $@\n";
+    warn "Exception when calling DefaultApi->apiLoginPost: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiAuthPost-0-python">
+                            <div class="tab-pane" id="examples-Default-apiLoginPost-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import swagger_client
@@ -1021,9 +1058,10 @@ body = {
 
 try: 
     # Authenticate and get a JWT.
-    api_instance.api_auth_post(body)
+    api_response = api_instance.api_login_post(body)
+    pprint(api_response)
 except ApiException as e:
-    print("Exception when calling DefaultApi->apiAuthPost: %s\n" % e)</code></pre>
+    print("Exception when calling DefaultApi->apiLoginPost: %s\n" % e)</code></pre>
                             </div>
                           </div>
 
@@ -1069,12 +1107,12 @@ except ApiException as e:
                                   }
                                 
                                   var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-                                  var result = $('#d2e199_apiAuthPost_body');
+                                  var result = $('#d2e199_apiLoginPost_body');
                                   result.empty();
                                   result.append(view.render());
                                 });
                                 </script>
-                                <div id="d2e199_apiAuthPost_body"></div>
+                                <div id="d2e199_apiLoginPost_body"></div>
                                 </td>
                                 </tr>
                             </table>
@@ -1085,12 +1123,349 @@ except ApiException as e:
                             <h3> Status: 201 - Created </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiLoginPost-201-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiLoginPost-201-schema">
+                                  <div id='responses-apiLoginPost-201-schema-201' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Created",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/SignInResponseViewModel"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiLoginPost-201-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiLoginPost-201-schema-201');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiLoginPost-201-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 400 - Authentication failed </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
                             </div>
 
-                            <h3> Status: 400 - Authentication failed </h3>
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Default-apiSignupPost">
+                      <article id="api-Default-apiSignupPost-0" data-group="User" data-name="apiSignupPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>apiSignupPost</h1>
+                          <p>Creates a user.</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked"></p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/signup</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Default-apiSignupPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-apiSignupPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-apiSignupPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiSignupPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-apiSignupPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-apiSignupPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiSignupPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-apiSignupPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-apiSignupPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-apiSignupPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-apiSignupPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Default-apiSignupPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+-H "Content-Type: application/json"\
+"https://g8-api-4zjqp.ondigitalocean.app/api/signup"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Default-apiSignupPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DefaultApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        
+        DefaultApi apiInstance = new DefaultApi();
+        SignupRequestViewModel body = {
+  "firstName" : "Alice",
+  "lastName" : "Fox",
+  "email" : "afox@g8.org",
+  "password" : "pwd"
+}; // SignupRequestViewModel | 
+        try {
+            apiInstance.apiSignupPost(body);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiSignupPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Default-apiSignupPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        DefaultApi apiInstance = new DefaultApi();
+        SignupRequestViewModel body = {
+  "firstName" : "Alice",
+  "lastName" : "Fox",
+  "email" : "afox@g8.org",
+  "password" : "pwd"
+}; // SignupRequestViewModel | 
+        try {
+            apiInstance.apiSignupPost(body);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiSignupPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Default-apiSignupPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Default-apiSignupPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">SignupRequestViewModel *body = {
+  "firstName" : "Alice",
+  "lastName" : "Fox",
+  "email" : "afox@g8.org",
+  "password" : "pwd"
+}; // 
+
+DefaultApi *apiInstance = [[DefaultApi alloc] init];
+
+// Creates a user.
+[apiInstance apiSignupPostWith:body
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiSignupPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var G8Api = require('g8_api');
+
+var api = new G8Api.DefaultApi()
+var body = {
+  "firstName" : "Alice",
+  "lastName" : "Fox",
+  "email" : "afox@g8.org",
+  "password" : "pwd"
+}; // {{SignupRequestViewModel}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.apiSignupPost(body, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Default-apiSignupPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Default-apiSignupPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class apiSignupPostExample
+    {
+        public void main()
+        {
+
+            var apiInstance = new DefaultApi();
+            var body = new SignupRequestViewModel(); // SignupRequestViewModel | 
+
+            try
+            {
+                // Creates a user.
+                apiInstance.apiSignupPost(body);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DefaultApi.apiSignupPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiSignupPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\ApiDefaultApi();
+$body = {
+  "firstName" : "Alice",
+  "lastName" : "Fox",
+  "email" : "afox@g8.org",
+  "password" : "pwd"
+}; // SignupRequestViewModel | 
+
+try {
+    $api_instance->apiSignupPost($body);
+} catch (Exception $e) {
+    echo 'Exception when calling DefaultApi->apiSignupPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiSignupPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DefaultApi;
+
+my $api_instance = WWW::SwaggerClient::DefaultApi->new();
+my $body = WWW::SwaggerClient::Object::SignupRequestViewModel->new(); # SignupRequestViewModel | 
+
+eval { 
+    $api_instance->apiSignupPost(body => $body);
+};
+if ($@) {
+    warn "Exception when calling DefaultApi->apiSignupPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiSignupPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.DefaultApi()
+body = {
+  "firstName" : "Alice",
+  "lastName" : "Fox",
+  "email" : "afox@g8.org",
+  "password" : "pwd"
+} # SignupRequestViewModel | 
+
+try: 
+    # Creates a user.
+    api_instance.api_signup_post(body)
+except ApiException as e:
+    print("Exception when calling DefaultApi->apiSignupPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/SignupRequestViewModel"
+      },
+      "example" : {
+        "firstName" : "Alice",
+        "lastName" : "Fox",
+        "email" : "afox@g8.org",
+        "password" : "pwd"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_apiSignupPost_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_apiSignupPost_body"></div>
+                                </td>
+                                </tr>
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 201 - Created </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>
@@ -2063,310 +2438,6 @@ except ApiException as e:
                             </div>
 
                             <h3> Status: 401 -  </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                            </div>
-
-                        </article>
-                      </div>
-                      <hr>
-                    <div id="api-Default-apiUserPost">
-                      <article id="api-Default-apiUserPost-0" data-group="User" data-name="apiUserPost" data-version="0">
-                        <div class="pull-left">
-                          <h1>apiUserPost</h1>
-                          <p>Creates a user.</p>
-                        </div>
-                        <div class="pull-right"></div>
-                        <div class="clearfix"></div>
-                        <p></p>
-                        <p class="marked"></p>
-                        <p></p>
-                        <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/user</span></code></pre>
-                        <p>
-                          <h3>Usage and SDK Samples</h3>
-                        </p>
-                        <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-apiUserPost-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-apiUserPost-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-apiUserPost-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiUserPost-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-apiUserPost-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-apiUserPost-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiUserPost-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-apiUserPost-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-apiUserPost-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-apiUserPost-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-apiUserPost-0-python">Python</a></li>
-                        </ul>
-
-                        <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-apiUserPost-0-curl">
-                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
--H "Content-Type: application/json"\
-"https://g8-api-4zjqp.ondigitalocean.app/api/user"</code></pre>
-                          </div>
-                          <div class="tab-pane" id="examples-Default-apiUserPost-0-java">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
-import io.swagger.client.auth.*;
-import io.swagger.client.model.*;
-import io.swagger.client.api.DefaultApi;
-
-import java.io.File;
-import java.util.*;
-
-public class DefaultApiExample {
-
-    public static void main(String[] args) {
-        
-        DefaultApi apiInstance = new DefaultApi();
-        User body = {
-  "id" : 1,
-  "firstName" : "Alice",
-  "lastName" : "Fox",
-  "email" : "afox@g8.org",
-  "password" : "pwd"
-}; // User | 
-        try {
-            apiInstance.apiUserPost(body);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiUserPost");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-
-                          <div class="tab-pane" id="examples-Default-apiUserPost-0-android">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
-
-public class DefaultApiExample {
-
-    public static void main(String[] args) {
-        DefaultApi apiInstance = new DefaultApi();
-        User body = {
-  "id" : 1,
-  "firstName" : "Alice",
-  "lastName" : "Fox",
-  "email" : "afox@g8.org",
-  "password" : "pwd"
-}; // User | 
-        try {
-            apiInstance.apiUserPost(body);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiUserPost");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-  <!--
-  <div class="tab-pane" id="examples-Default-apiUserPost-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
-                            <div class="tab-pane" id="examples-Default-apiUserPost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">User *body = {
-  "id" : 1,
-  "firstName" : "Alice",
-  "lastName" : "Fox",
-  "email" : "afox@g8.org",
-  "password" : "pwd"
-}; // 
-
-DefaultApi *apiInstance = [[DefaultApi alloc] init];
-
-// Creates a user.
-[apiInstance apiUserPostWith:body
-              completionHandler: ^(NSError* error) {
-                            if (error) {
-                                NSLog(@"Error: %@", error);
-                            }
-                        }];
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-apiUserPost-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var G8Api = require('g8_api');
-
-var api = new G8Api.DefaultApi()
-var body = {
-  "id" : 1,
-  "firstName" : "Alice",
-  "lastName" : "Fox",
-  "email" : "afox@g8.org",
-  "password" : "pwd"
-}; // {{User}} 
-
-var callback = function(error, data, response) {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully.');
-  }
-};
-api.apiUserPost(body, callback);
-</code></pre>
-                            </div>
-
-                            <!--<div class="tab-pane" id="examples-Default-apiUserPost-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
-                            <div class="tab-pane" id="examples-Default-apiUserPost-0-csharp">
-                              <pre class="prettyprint"><code class="language-cs">using System;
-using System.Diagnostics;
-using IO.Swagger.Api;
-using IO.Swagger.Client;
-using IO.Swagger.Model;
-
-namespace Example
-{
-    public class apiUserPostExample
-    {
-        public void main()
-        {
-
-            var apiInstance = new DefaultApi();
-            var body = new User(); // User | 
-
-            try
-            {
-                // Creates a user.
-                apiInstance.apiUserPost(body);
-            }
-            catch (Exception e)
-            {
-                Debug.Print("Exception when calling DefaultApi.apiUserPost: " + e.Message );
-            }
-        }
-    }
-}
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-apiUserPost-0-php">
-                              <pre class="prettyprint"><code class="language-php"><&#63;php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-$api_instance = new Swagger\Client\ApiDefaultApi();
-$body = {
-  "id" : 1,
-  "firstName" : "Alice",
-  "lastName" : "Fox",
-  "email" : "afox@g8.org",
-  "password" : "pwd"
-}; // User | 
-
-try {
-    $api_instance->apiUserPost($body);
-} catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->apiUserPost: ', $e->getMessage(), PHP_EOL;
-}
-?></code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-apiUserPost-0-perl">
-                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
-use WWW::SwaggerClient::Configuration;
-use WWW::SwaggerClient::DefaultApi;
-
-my $api_instance = WWW::SwaggerClient::DefaultApi->new();
-my $body = WWW::SwaggerClient::Object::User->new(); # User | 
-
-eval { 
-    $api_instance->apiUserPost(body => $body);
-};
-if ($@) {
-    warn "Exception when calling DefaultApi->apiUserPost: $@\n";
-}</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-apiUserPost-0-python">
-                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
-import time
-import swagger_client
-from swagger_client.rest import ApiException
-from pprint import pprint
-
-# create an instance of the API class
-api_instance = swagger_client.DefaultApi()
-body = {
-  "id" : 1,
-  "firstName" : "Alice",
-  "lastName" : "Fox",
-  "email" : "afox@g8.org",
-  "password" : "pwd"
-} # User | 
-
-try: 
-    # Creates a user.
-    api_instance.api_user_post(body)
-except ApiException as e:
-    print("Exception when calling DefaultApi->apiUserPost: %s\n" % e)</code></pre>
-                            </div>
-                          </div>
-
-                          <h2>Parameters</h2>
-
-
-
-                            <div class="methodsubtabletitle">Body parameters</div>
-                            <table id="methodsubtable">
-                              <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
-                              </tr>
-                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
-                                <td>
-                                
-                                
-                                <script>
-                                $(document).ready(function() {
-                                  var schemaWrapper = {
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/User"
-      },
-      "example" : {
-        "id" : 1,
-        "firstName" : "Alice",
-        "lastName" : "Fox",
-        "email" : "afox@g8.org",
-        "password" : "pwd"
-      }
-    }
-  },
-  "required" : true
-};
-                                  var schema = schemaWrapper.content["application/json"].schema;
-                                  if (schema.$ref != null) {
-                                    schema = defsParser.$refs.get(schema.$ref);
-                                  } else {
-                                    schemaWrapper.components = {};
-                                    schemaWrapper.components.schemas = Object.assign({}, defs);
-                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                      console.log(err);
-                                    });
-                                  }
-                                
-                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-                                  var result = $('#d2e199_apiUserPost_body');
-                                  result.empty();
-                                  result.append(view.render());
-                                });
-                                </script>
-                                <div id="d2e199_apiUserPost_body"></div>
-                                </td>
-                                </tr>
-                            </table>
-
-
-
-                          <h2>Responses</h2>
-                            <h3> Status: 201 - Created </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                             </ul>

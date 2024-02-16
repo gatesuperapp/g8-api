@@ -1,5 +1,6 @@
 package com.a4a.g8api.database
 
+import com.a4a.g8api.models.RefreshToken
 import com.a4a.g8api.models.User
 import org.jetbrains.exposed.sql.ResultRow
 
@@ -10,7 +11,11 @@ interface IUsersService {
 
     suspend fun userById(id: Int): User?
 
-    suspend fun userByEmailAndPassword(email: String, password: String): User?
+    suspend fun userByEmail(email: String): User?
 
     suspend fun createUser(user: User): Int
+
+
+    fun resultRowToRefreshToken(row: ResultRow): RefreshToken
+    suspend fun refreshTokenByUserId(id : Int) : RefreshToken?
 }

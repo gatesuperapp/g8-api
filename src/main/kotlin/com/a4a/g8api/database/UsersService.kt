@@ -1,9 +1,11 @@
 package com.a4a.g8api.database
 
+import com.a4a.g8api.models.RefreshToken
 import com.a4a.g8api.models.User
 import com.a4a.g8api.plugins.dbQuery
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -23,12 +25,27 @@ class UsersService () : IUsersService {
         override val primaryKey = PrimaryKey(id)
     }
 
+    object RefreshTokens : Table() {
+        val id = integer("id").autoIncrement()
+        val token = varchar("token", 30)
+        val expiresAt = datetime("expiresAt")
+        val userId = reference("userId", Users.id)
+
+        override val primaryKey = PrimaryKey(id)
+    }
     override fun resultRowToUser(row: ResultRow) = User(
         id = row[Users.id],
         firstName = row[Users.firstName],
         lastName = row[Users.lastName],
         email = row[Users.email],
         password = row[Users.password]
+    )
+
+    override fun resultRowToRefreshToken(row: ResultRow) = RefreshToken(
+        id = row[RefreshTokens.id],
+        token = row[RefreshTokens.token],
+        expiresAt = row[RefreshTokens.expiresAt],
+        userId = row[RefreshTokens.userId]
     )
 
     override suspend fun allUsers(): List<User> = dbQuery {
@@ -42,10 +59,9 @@ class UsersService () : IUsersService {
             .singleOrNull()
     }
 
-    override suspend fun userByEmailAndPassword(email: String, password: String): User? = dbQuery {
+    override suspend fun userByEmail(email: String): User? = dbQuery {
         Users
             .selectAll().where { Users.email eq email }
-            .andWhere { Users.password eq password }
             .map(::resultRowToUser)
             .singleOrNull()
     }
@@ -57,5 +73,12 @@ class UsersService () : IUsersService {
             it[email] = user.email
             it[password] = user.password
         }[Users.id]
+    }
+
+    override suspend fun refreshTokenByUserId(id: Int): RefreshToken? = dbQuery {
+        RefreshTokens
+            .selectAll().where { RefreshTokens.userId eq id }
+            .map(::resultRowToRefreshToken)
+            .singleOrNull()
     }
 }

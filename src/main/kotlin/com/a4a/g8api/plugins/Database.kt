@@ -29,6 +29,7 @@ fun Application.configureDatabase() {
     val db= Database.connect(provideDataSource(jdbcUrl,driverClass))
     transaction(db){
         SchemaUtils.create(UsersService.Users)
+        SchemaUtils.create(UsersService.RefreshTokens)
     }
 }
 

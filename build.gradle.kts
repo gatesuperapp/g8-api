@@ -42,6 +42,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:0.47.0")
     implementation("org.jetbrains.exposed:exposed-dao:0.47.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.47.0")
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.47.0")
     implementation("com.h2database:h2:2.2.224")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
     // Dependency Injection
@@ -50,6 +51,9 @@ dependencies {
     // Connection pooling
     //Facilitates connection pooling, optimizing performance and resource usage by reusing connections instead of creating new ones for each operation.
     implementation("com.zaxxer:HikariCP:$hikaricp_version")
+    //bcrypt implementation for hashing passwords
+    //https://github.com/jeremyh/jBCrypt
+    implementation("org.mindrot:jbcrypt:0.4")
 }
 
 
