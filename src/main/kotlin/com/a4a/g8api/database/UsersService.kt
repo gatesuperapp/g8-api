@@ -5,6 +5,7 @@ import com.a4a.g8api.models.User
 import com.a4a.g8api.plugins.dbQuery
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -27,9 +28,9 @@ class UsersService () : IUsersService {
 
     object RefreshTokens : Table() {
         val id = integer("id").autoIncrement()
-        val token = varchar("token", 30)
+        val token = varchar("token", 60)
         val expiresAt = datetime("expiresAt")
-        val userId = reference("userId", Users.id)
+        val userId = integer("userId").references(Users.id)
 
         override val primaryKey = PrimaryKey(id)
     }
@@ -75,10 +76,23 @@ class UsersService () : IUsersService {
         }[Users.id]
     }
 
-    override suspend fun refreshTokenByUserId(id: Int): RefreshToken? = dbQuery {
+    override suspend fun refreshTokenByToken(token :String): RefreshToken? = dbQuery {
         RefreshTokens
-            .selectAll().where { RefreshTokens.userId eq id }
+            .selectAll().where { RefreshTokens.token eq token }
             .map(::resultRowToRefreshToken)
             .singleOrNull()
     }
+
+    override suspend fun saveRefreshToken(refreshToken: RefreshToken): Int = dbQuery {
+        RefreshTokens.insert {
+            it[token] = refreshToken.token
+            it[expiresAt] = refreshToken.expiresAt
+            it[userId] = refreshToken.userId
+        }[RefreshTokens.id]
+    }
+
+    override suspend fun deleteRefreshToken(refreshTokenId: Int): Unit = dbQuery {
+        RefreshTokens.deleteWhere { id eq refreshTokenId }
+    }
+
 }

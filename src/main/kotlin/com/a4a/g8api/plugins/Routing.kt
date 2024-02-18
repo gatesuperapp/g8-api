@@ -19,6 +19,7 @@ fun Application.configureRouting(usersService: IUsersService=get()) {
         getUsers(usersService)
         usersSubscriptions()
         authenticate(usersService)
+        refreshAuthenticationToken(usersService)
     }
 
 }

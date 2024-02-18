@@ -88,7 +88,7 @@ paths:
                 $ref: '#/components/schemas/Subscription'
         "401":
           $ref: '#/components/responses/UnauthorizedError'
-  /api/signup:
+  /api/authentication/signup:
     post:
       summary: Creates a user.
       requestBody:
@@ -105,7 +105,7 @@ paths:
       responses:
         '201':
           description: Created
-  /api/login:
+  /api/authentication/signin:
     post:
       summary: Authenticate and get a JWT.
       requestBody:
@@ -118,14 +118,64 @@ paths:
               email: 'afox@g8.org'
               password: 'pwd'
       responses:
-        '201':
-          description: Created
+        '200':
+          description: Authentication succeeded
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SignInResponseViewModel'
-        '400':
+        '401':
           description: Authentication failed
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/authentication/refresh:
+    post:
+      summary: Get a new JWT using the refresh token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequestViewModel'
+            example:
+              refreshToken: '[put your token here]'
+      responses:
+        '200':
+          description: Auth Token was renewed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshTokenResponseViewModel'
+        '401':
+          description: Authentication failed
+  /api/authentication/recovery:
+    post:
+      summary: Start the password recovery process
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecoveryRequestViewModel'
+            example:
+              email: 'sfox@g8.app'
+      responses:
+        '200':
+          description: Recovery email sent
+  /api/authentication/recovery-confirmation:
+    post:
+      summary: Send the recovery token to confirm the password change
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecoveryConfirmationRequestViewModel'
+            example:
+              recoveryToken: 'azerTyuIop...'
+              password: 'newPassword'
+      responses:
+        '200':
+          description: Password updated
 
 components:
   securitySchemes:
@@ -200,5 +250,22 @@ components:
         authToken:
           type: string
         refreshToken:
+          type: string
+    RefreshTokenRequestViewModel:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+    RecoveryRequestViewModel:
+      type: object
+      properties:
+        email:
+          type: string
+    RecoveryConfirmationRequestViewModel:
+      type: object
+      properties:
+        recoveryToken:
+          type: string
+        password:
           type: string
 

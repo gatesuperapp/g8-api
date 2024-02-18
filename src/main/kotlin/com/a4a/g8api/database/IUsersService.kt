@@ -17,5 +17,7 @@ interface IUsersService {
 
 
     fun resultRowToRefreshToken(row: ResultRow): RefreshToken
-    suspend fun refreshTokenByUserId(id : Int) : RefreshToken?
+    suspend fun refreshTokenByToken(token : String) : RefreshToken?
+    suspend fun saveRefreshToken(refreshToken: RefreshToken) : Int
+    suspend fun deleteRefreshToken(refreshTokenId: Int)
 }

@@ -37,7 +37,7 @@ fun Route.getUsers(usersService: IUsersService){
 }
 
 fun Route.createUser(usersService: IUsersService){
-    post("/api/signup"){
+    post("/api/authentication/signup"){
         val user = call.receive<SignupRequestViewModel>()
 
         //TODO : Hash the password - PBKDF2, BCrypt, and SCrypt are three recommended algorithms.
@@ -55,3 +55,4 @@ fun Route.createUser(usersService: IUsersService){
         call.respondText("Account created", status = HttpStatusCode.Created)
     }
 }
+
