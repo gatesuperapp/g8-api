@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(./gradlew:*)",
+      "Bash(curl -s http://localhost:8080/swagger)",
+      "WebSearch"
+    ]
+  }
+}
