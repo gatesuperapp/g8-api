@@ -64,7 +64,10 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:0.47.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.47.0")
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.47.0")
+    // H2 kept for the test suite (in-memory, MODE=PostgreSQL).
     implementation("com.h2database:h2:2.2.224")
+    // Production database — read DATABASE_URL/USER/PASSWORD env vars (see application.conf).
+    implementation("org.postgresql:postgresql:42.7.4")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
     // Dependency Injection
     //Enables external provisioning of component dependencies, fostering modularity and flexibility in development.
