@@ -4,6 +4,10 @@ import com.a4a.g8api.database.ISessionService
 import com.a4a.g8api.database.ISubscriptionService
 import com.a4a.g8api.database.IUsersService
 import com.a4a.g8api.models.ErrorResponse
+import com.stripe.Stripe
+import com.stripe.exception.StripeException
+import com.stripe.model.Customer
+import com.stripe.model.Subscription as StripeSubscription
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -12,7 +16,10 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
+import org.slf4j.LoggerFactory
 import java.util.UUID
+
+private val accountLog = LoggerFactory.getLogger("account")
 
 /**
  * POST /v1/auth/logout — revoke current session
@@ -80,23 +87,79 @@ fun Route.getMe(usersService: IUsersService, subscriptionService: ISubscriptionS
 }
 
 /**
- * DELETE /v1/me — soft delete account (RGPD)
+ * DELETE /v1/me — RGPD account deletion.
+ *
+ * Order matters: Stripe first, local state second. If Stripe is unreachable we still
+ * cancel the local account (the user wants out, blocking on a Stripe outage would be
+ * worse than a lingering Stripe customer record we can sweep later). Stripe errors are
+ * logged for manual reconciliation.
+ *
+ * What we do, end to end:
+ *  1. Cancel the active Stripe Subscription immediately (`Subscription.cancel`, not
+ *     `cancel_at_period_end` — the user has paid, but they want gone now).
+ *  2. Delete the Stripe Customer (anonymises their PII on Stripe's side, satisfies RGPD).
+ *  3. Revoke all refresh sessions for the user.
+ *  4. Soft-delete the user record (sets `deleted_at` — kept for audit, made invisible
+ *     to all lookup queries by the partial unique index on `email`).
  */
-fun Route.deleteMe(usersService: IUsersService, sessionService: ISessionService) {
+fun Route.deleteMe(
+    usersService: IUsersService,
+    sessionService: ISessionService,
+    subscriptionService: ISubscriptionService,
+) {
     authenticate {
         delete("/v1/me") {
             val principal = call.principal<JWTPrincipal>()
                 ?: return@delete call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
 
             val userId = UUID.fromString(principal.getClaim("id", String::class))
+            // Need the stripe customer ID before the soft-delete makes the row disappear
+            // from `userById` (the query filters out `deleted_at IS NOT NULL`).
+            val user = usersService.userById(userId)
+                ?: return@delete call.respond(HttpStatusCode.NotFound, ErrorResponse("User not found"))
 
-            // Revoke all sessions
+            val stripeKey = System.getenv("STRIPE_SECRET_KEY")
+            if (!stripeKey.isNullOrBlank()) {
+                Stripe.apiKey = stripeKey
+
+                // Cancel the active subscription, if any. Already-cancelled subs throw
+                // a StripeException we just log and move on — idempotent for the caller.
+                val sub = subscriptionService.findByUserId(userId)
+                if (sub != null) {
+                    try {
+                        StripeSubscription.retrieve(sub.stripeSubscriptionId).cancel()
+                        accountLog.info("Cancelled Stripe subscription ${sub.stripeSubscriptionId} for user $userId")
+                    } catch (e: StripeException) {
+                        accountLog.error(
+                            "Failed to cancel Stripe subscription ${sub.stripeSubscriptionId} for user $userId — local deletion proceeds",
+                            e
+                        )
+                    }
+                }
+
+                // Delete the Stripe Customer so their PII (name, email, payment methods)
+                // is purged on Stripe's side too. Stripe keeps a deleted-Customer stub
+                // for invoice history; that's compatible with French accounting law.
+                if (!user.stripeCustomerId.isNullOrBlank()) {
+                    try {
+                        Customer.retrieve(user.stripeCustomerId).delete()
+                        accountLog.info("Deleted Stripe customer ${user.stripeCustomerId} for user $userId")
+                    } catch (e: StripeException) {
+                        accountLog.error(
+                            "Failed to delete Stripe customer ${user.stripeCustomerId} for user $userId — local deletion proceeds",
+                            e
+                        )
+                    }
+                }
+            } else {
+                accountLog.warn("STRIPE_SECRET_KEY not set — skipping Stripe cleanup for user $userId")
+            }
+
+            // Local cleanup. The session revoke makes any existing access token reject
+            // on next call (interceptor will see 401 and clear local tokens), the
+            // soft-delete sets `deleted_at` so the user is invisible to lookup queries.
             sessionService.revokeAllUserSessions(userId)
-
-            // Soft delete user
             usersService.softDeleteUser(userId)
-
-            // TODO: Cancel Stripe subscription if active
 
             call.respond(HttpStatusCode.NoContent)
         }

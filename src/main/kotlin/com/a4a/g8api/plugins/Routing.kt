@@ -53,7 +53,7 @@ fun Application.configureRouting(
 
         // Account (authenticated)
         getMe(usersService, subscriptionService)
-        deleteMe(usersService, sessionService)
+        deleteMe(usersService, sessionService, subscriptionService)
 
         // Billing (authenticated)
         createCheckoutSession(usersService, subscriptionService)
