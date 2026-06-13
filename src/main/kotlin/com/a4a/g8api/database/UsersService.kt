@@ -12,7 +12,10 @@ class UsersService : IUsersService {
 
     object Users : Table("users") {
         val id = uuid("id").autoGenerate()
-        val email = varchar("email", 1024).uniqueIndex()
+        // Uniqueness is enforced by a partial index `users_email_active_unique` created
+        // in Database.kt (Postgres: WHERE deleted_at IS NULL ; H2 tests: plain unique).
+        // The partial form lets a soft-deleted account's email be re-used by a new signup.
+        val email = varchar("email", 1024)
         val stripeCustomerId = varchar("stripe_customer_id", 256).nullable()
         val createdAt = datetime("created_at")
         val updatedAt = datetime("updated_at")

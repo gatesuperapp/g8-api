@@ -181,13 +181,15 @@ private suspend fun handleCheckoutCompleted(
         )
     }
 
-    // If the checkout did NOT come from a logged-in app session (i.e. user paid on the
-    // website without being authenticated), send them a magic link so they can access
-    // their newly-paid Premium account in the app. We bypass the per-email rate limit
-    // intentionally: the user just paid, they expect this email — silently dropping it
-    // would block a legitimate paid signup.
-    if (userIdFromMetadata == null && !checkoutEmail.isNullOrBlank()) {
-        val purpose = if (isNewUser) "signup" else "login"
+    // Only send a post-checkout magic link for *brand-new* users. The previous
+    // "userIdFromMetadata == null" check was too broad: an existing app user who paid
+    // through the website (where the checkout has no user_id metadata) would get
+    // re-emailed a "log into g8" link even though they're already signed in. Existing
+    // users — whether matched via metadata or via the checkout email — already have a
+    // way into the app, so we stay quiet. Only the genuine "Stripe-first" signup
+    // (no prior account) gets the email.
+    if (isNewUser && !checkoutEmail.isNullOrBlank()) {
+        val purpose = "signup"
         try {
             val token = magicLinkService.createToken(checkoutEmail, purpose)
             emailService.sendMagicLinkEmail(checkoutEmail, token, purpose)

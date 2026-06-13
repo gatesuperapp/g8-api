@@ -60,12 +60,17 @@ class EmailService(
         }
     }
 
-    private fun signupSubject() = "Bienvenue sur g8 — confirmez votre inscription"
+    private fun signupSubject() = "Confirmez votre inscription à g8"
     private fun loginSubject() = "Votre lien de connexion g8 (valide 15 minutes)"
 
     private fun signupBody(token: String) = wrapHtml(
-        title = "Bienvenue sur g8",
-        intro = "Votre inscription à g8 a été demandée avec cette adresse email.",
+        title = "Confirmez votre inscription à g8",
+        bodyHtml = """
+            <p>Une inscription à g8 a été demandée avec cette adresse e-mail.</p>
+            <p>Pour débloquer toutes les fonctionnalités, vous pourrez devenir membre premium :
+               <a href="https://the-gate.fr/premium" style="color: #932092;">https://the-gate.fr/premium</a></p>
+            <p>Pour activer votre compte, confirmez votre inscription ci-dessous :</p>
+        """.trimIndent(),
         ctaLabel = "Confirmer mon inscription",
         ctaUrl = webLink(token),
         ignoreNote = "Si vous n'êtes pas à l'origine de cette inscription, ignorez simplement ce message : aucun compte ne sera créé.",
@@ -73,7 +78,7 @@ class EmailService(
 
     private fun loginBody(token: String) = wrapHtml(
         title = "Connexion à g8",
-        intro = "Voici votre lien pour vous connecter à g8 :",
+        bodyHtml = "<p>Voici votre lien pour vous connecter à g8 :</p>",
         ctaLabel = "Se connecter à g8",
         ctaUrl = webLink(token),
         ignoreNote = "Si vous n'avez pas demandé cette connexion, ignorez ce message : personne ne peut accéder à votre compte sans ce lien.",
@@ -83,7 +88,7 @@ class EmailService(
 
     private fun wrapHtml(
         title: String,
-        intro: String,
+        bodyHtml: String,
         ctaLabel: String,
         ctaUrl: String,
         ignoreNote: String,
@@ -95,7 +100,7 @@ class EmailService(
             <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
                 <h2 style="color: #932092;">$title</h2>
                 <p>Bonjour,</p>
-                <p>$intro</p>
+                $bodyHtml
                 <p style="text-align: center; margin: 30px 0;">
                     <a href="$ctaUrl"
                        style="background-color: #932092; color: white; padding: 15px 30px;
