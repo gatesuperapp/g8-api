@@ -64,7 +64,7 @@ class EmailService(
         val lang = pickLang(locale)
         return when (purpose) {
             "signup" -> sendEmail(to, signupSubject(lang), signupBody(token, lang))
-            "post_checkout_signup" -> sendEmail(
+            "premium_signup" -> sendEmail(
                 to, premiumSignupSubject(lang), premiumSignupBody(token, lang)
             )
             else -> sendEmail(to, loginSubject(lang), loginBody(token, lang))

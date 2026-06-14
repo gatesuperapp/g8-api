@@ -189,11 +189,11 @@ private suspend fun handleCheckoutCompleted(
     // way into the app, so we stay quiet. Only the genuine "Stripe-first" signup
     // (no prior account) gets the email.
     if (isNewUser && !checkoutEmail.isNullOrBlank()) {
-        // post_checkout_signup gets a different email body that confirms the premium
+        // premium_signup gets a different email body that confirms the premium
         // subscription instead of pitching one — the user just paid. Stripe stores the
         // language used at checkout in session.locale (e.g. "fr" / "en" / "auto") —
         // pass it through so the email matches what they saw on the payment page.
-        val purpose = "post_checkout_signup"
+        val purpose = "premium_signup"
         try {
             val token = magicLinkService.createToken(checkoutEmail, purpose)
             emailService.sendMagicLinkEmail(checkoutEmail, token, purpose, session.locale)
