@@ -4,9 +4,38 @@
             <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
+
+    <!--
+        Dedicated file appender for the `auth` logger, consumed by fail2ban.
+        fail2ban's `backend = systemd` was unreliable on this server (reader did not
+        pick up new journal entries even with the right journalmatch), so we route
+        AuthLogger output through a real file that fail2ban tails via pyinotify.
+        Daily rotation, 30-day retention, gzipped — capped at 100 MB total so it
+        can't run wild even if traffic spikes.
+    -->
+    <appender name="AUTH_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/var/log/g8-api/auth.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/var/log/g8-api/auth.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <root level="trace">
         <appender-ref ref="STDOUT"/>
     </root>
     <logger name="org.eclipse.jetty" level="INFO"/>
     <logger name="io.netty" level="INFO"/>
+
+    <!--
+        `auth` events also flow to AUTH_FILE. additivity="true" keeps them on STDOUT
+        too (so journald still has them for grep / ad-hoc debugging).
+    -->
+    <logger name="auth" level="INFO" additivity="true">
+        <appender-ref ref="AUTH_FILE"/>
+    </logger>
 </configuration>
