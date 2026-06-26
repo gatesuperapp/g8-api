@@ -8,7 +8,7 @@ Document destiné à un reviewer externe. Donne le fonctionnement de l'API et la
 
 ### Stack
 - **Kotlin 1.9.22** / **Ktor 2.3.7** (Netty), JVM 17
-- Build Gradle Kotlin DSL, packagé en fatjar via Docker multi-stage (`gradle:jdk21` → `openjdk:21`), port 8080
+- Build Gradle Kotlin DSL, fatjar via Ktor plugin (`./gradlew buildFatJar` → `build/libs/g8-api.jar`), port 8080. Pas de Docker en prod : déploiement direct par scp du JAR + systemd.
 - DI **Koin 3.5.3** (un seul module)
 - Entrypoint : `src/main/kotlin/com/a4a/g8api/Application.kt`
 
