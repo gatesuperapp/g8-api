@@ -57,7 +57,7 @@ class AuthIntegrationTest {
         // Touch the test client so the application is started and Koin is initialized
         startApplication()
         val service: IMagicLinkService = koinGet()
-        return service.createToken(email, purpose, "127.0.0.1", "test-agent")
+        return service.createToken(email, purpose)
     }
 
     private suspend fun ApplicationTestBuilder.signupAndConsume(email: String): TokenPair {
@@ -298,7 +298,7 @@ class AuthIntegrationTest {
 
         // 21st attempt must be rate-limited (429), even with a token that would otherwise be valid
         val service: IMagicLinkService = koinGet()
-        val realToken = service.createToken("victim@example.com", "signup", "127.0.0.1", "test-agent")
+        val realToken = service.createToken("victim@example.com", "signup")
         val response = client.post("/v1/auth/magic-link/consume") {
             contentType(ContentType.Application.Json)
             setBody(ConsumeBody(realToken))

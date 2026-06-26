@@ -48,12 +48,10 @@ fun Route.requestMagicLink(
             return@post
         }
 
-        val userAgent = call.request.headers["User-Agent"]
-
         val existingUser = usersService.userByEmail(email)
         val purpose = if (existingUser != null) "login" else "signup"
 
-        val token = magicLinkService.createToken(email, purpose, ipAddress, userAgent)
+        val token = magicLinkService.createToken(email, purpose)
         val sent = emailService.sendMagicLinkEmail(email, token, purpose, request.locale)
         if (!sent) {
             log.warn("magic-link send failed for email=$email purpose=$purpose")

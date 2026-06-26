@@ -1,10 +1,19 @@
 package com.a4a.g8api.database
 
 import com.a4a.g8api.plugins.dbQuery
-import kotlinx.datetime.*
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.exposed.sql.Op
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.update
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.Base64
@@ -19,17 +28,13 @@ class MagicLinkService : IMagicLinkService {
         val expiresAt = datetime("expires_at")
         val consumedAt = datetime("consumed_at").nullable()
         val createdAt = datetime("created_at")
-        val ipAddress = varchar("ip_address", 64).nullable()
-        val userAgent = varchar("user_agent", 1024).nullable()
 
         override val primaryKey = PrimaryKey(id)
     }
 
     override suspend fun createToken(
         email: String,
-        purpose: String,
-        ipAddress: String?,
-        userAgent: String?
+        purpose: String
     ): String = dbQuery {
         // Generate 32 bytes secure random token, base64url encoded
         val secureRandom = SecureRandom()
@@ -57,8 +62,6 @@ class MagicLinkService : IMagicLinkService {
             it[MagicLinks.purpose] = purpose
             it[MagicLinks.expiresAt] = expiresAt
             it[createdAt] = now
-            it[MagicLinks.ipAddress] = ipAddress
-            it[MagicLinks.userAgent] = userAgent
         }
 
         token
