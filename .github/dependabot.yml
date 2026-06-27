@@ -1,0 +1,43 @@
+# Dependabot — automated dependency updates + CVE-driven PRs.
+#
+# Replaces the OWASP Dependency Check plugin (NVD pulls were flaky). GitHub
+# resolves vulnerabilities against the GitHub Advisory Database (GHSA) on every
+# push and opens a PR whenever a dep can be upgraded out of a CVE.
+#
+# See https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+
+version: 2
+updates:
+  # Kotlin / JVM deps declared in build.gradle.kts.
+  - package-ecosystem: gradle
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Paris
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - gradle
+    # Group all minor + patch bumps into a single PR per week to cut review
+    # noise. Major bumps stay individual since they often need code changes.
+    groups:
+      gradle-minor-and-patch:
+        update-types:
+          - minor
+          - patch
+
+  # GitHub Actions used in this repo (none yet — but if/when we add a CI
+  # workflow with `uses: actions/checkout@v4` etc., we want bump PRs for those
+  # too. Harmless if there are no workflows: Dependabot just does nothing.)
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Paris
+    labels:
+      - dependencies
+      - github-actions

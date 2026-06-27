@@ -100,7 +100,7 @@ Tous en env vars, **aucun en clair dans le repo**.
 10. **`logback.xml` root = TRACE** → passer en `INFO` pour prod (volume de logs Netty/Jetty).
 11. **Statuts en `String`** (`subscription.status`, `magic_link.purpose`) → migrer en `enum class` Kotlin.
 12. **Couverture Stripe nulle** : ajouter tests sur `BillingRoutes` + `WebhookRoutes` avec mock SDK Stripe et fixtures signées (c'est le cœur revenu de l'app).
-13. **Versions dépendances** : Exposed 0.47 a plusieurs releases de retard (≥ 0.50). Ktor 2.3.7 vs branche 3.x. Pas critique, à arbitrer.
+13. **Versions dépendances** : Exposed 0.47 a plusieurs releases de retard (≥ 0.50). Ktor 2.3.7 vs branche 3.x. Pas critique, à arbitrer. Dependabot est désormais wiré (`.github/dependabot.yml`) — il ouvrira une PR hebdo groupée pour les bumps minor/patch et individuelle pour les major, et une PR ad-hoc dès qu'une CVE est publiée sur une dep.
 14. **Soft-delete user / RGPD** : vérifier que `CleanupService` purge bien les `sessions` et `magic_links` rattachés à un user soft-deleted — sinon données personnelles persistent.
 
 ### 🟢 RGPD — minimisation des données (fait)
