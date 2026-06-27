@@ -125,6 +125,12 @@ Tous en env vars, **aucun en clair dans le repo**.
 ## 3. Points positifs (à mentionner pour qu'ils ne soient pas re-challengés)
 
 - `JWT_SECRET` fail-fast au boot, rotation de refresh token, **replay detection**, anti-énumération sur magic-link (toujours 204), hash des tokens en base
+- **Magic-link token bullet-proof** (`MagicLinkService.kt:43-71`) :
+  - **Entropie 256 bits** : `ByteArray(32)` via `java.security.SecureRandom` (RNG cryptographique JCA), encodage `Base64.getUrlEncoder().withoutPadding()` (URL-safe sans encodage extra dans le mail).
+  - **Expiration 15 min** (`plus(15, MINUTE)`).
+  - **Usage unique** : `consumedAt` setté au consume, lecture vérifie `consumedAt.isNull()` → impossible de rejouer.
+  - **Stocké hashé** : `tokenHash = SHA-256(token)` en BDD, le clair ne quitte jamais le process (envoyé au user puis vérifié par hash). Pas de salt nécessaire car le clair est déjà 256 bits aléatoires (aucune surface pour rainbow tables).
+  - **Bonus** : un seul token actif par email à la fois (les précédents sont marqués consumed quand un nouveau est demandé, lignes 56-60). Purge des expirés par `CleanupService` (cron quotidien).
 - HMAC Stripe-Signature correctement vérifiée sur les webhooks
 - Anti-SSRF sur Healthchecks.io (regex whitelist)
 - `ClientIp` correctement implémenté (dernière IP non-trusted dans `X-Forwarded-For`)
