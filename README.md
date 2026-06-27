@@ -25,8 +25,8 @@ presented again, every session for that user is revoked.
 | POST    | `/v1/auth/magic-link/consume`     | —    | Creates user if missing, returns tokens  |
 | POST    | `/v1/auth/refresh`                | —    | Rotates the refresh token                |
 | POST    | `/v1/auth/logout`                 | JWT  | Revokes the current session              |
-| GET     | `/v1/me`                          | JWT  | Profile + subscription state             |
-| DELETE  | `/v1/me`                          | JWT  | Soft-delete + cancel Stripe              |
+| GET     | `/v1/account`                     | JWT  | Profile + subscription state             |
+| DELETE  | `/v1/account`                     | JWT  | Soft-delete + cancel Stripe              |
 | POST    | `/v1/billing/checkout-session`    | JWT  | Stripe Checkout                          |
 | POST    | `/v1/billing/portal-session`      | JWT  | Stripe Customer Portal                   |
 | POST    | `/v1/webhooks/stripe`             | HMAC | Stripe events (idempotent)               |

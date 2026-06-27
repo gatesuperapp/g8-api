@@ -44,7 +44,7 @@ class AuthIntegrationTest {
     @Serializable private data class MagicLinkRequest(val email: String)
     @Serializable private data class ConsumeBody(val token: String)
     @Serializable private data class RefreshBody(val refreshToken: String)
-    @Serializable private data class MeResponse(val email: String, val subscription: SubscriptionDto? = null)
+    @Serializable private data class AccountResponse(val email: String, val subscription: SubscriptionDto? = null)
     @Serializable private data class SubscriptionDto(val status: String, val currentPeriodEnd: String, val plan: String)
 
     private fun ApplicationTestBuilder.jsonClient() = createClient {
@@ -205,36 +205,36 @@ class AuthIntegrationTest {
     }
 
     // -------------------------------------------------------------------------
-    // /v1/me — JWT-protected endpoint
+    // /v1/account — JWT-protected endpoint
     // -------------------------------------------------------------------------
 
     @Test
-    fun `me without bearer returns 401`() = integrationTest {
+    fun `account without bearer returns 401`() = integrationTest {
         val client = jsonClient()
-        assertEquals(HttpStatusCode.Unauthorized, client.get("/v1/me").status)
+        assertEquals(HttpStatusCode.Unauthorized, client.get("/v1/account").status)
     }
 
     @Test
-    fun `me with garbage bearer returns 401`() = integrationTest {
+    fun `account with garbage bearer returns 401`() = integrationTest {
         val client = jsonClient()
-        val response = client.get("/v1/me") {
+        val response = client.get("/v1/account") {
             header(HttpHeaders.Authorization, "Bearer not-a-jwt")
         }
         assertEquals(HttpStatusCode.Unauthorized, response.status)
     }
 
     @Test
-    fun `me with valid JWT returns the user email`() = integrationTest {
-        val tokens = signupAndConsume("meuser@example.com")
+    fun `account with valid JWT returns the user email`() = integrationTest {
+        val tokens = signupAndConsume("accountuser@example.com")
         val client = jsonClient()
 
-        val response = client.get("/v1/me") {
+        val response = client.get("/v1/account") {
             header(HttpHeaders.Authorization, "Bearer ${tokens.authToken}")
         }
         assertEquals(HttpStatusCode.OK, response.status)
-        val me: MeResponse = response.body()
-        assertEquals("meuser@example.com", me.email)
-        assertEquals(null, me.subscription, "no subscription yet")
+        val account: AccountResponse = response.body()
+        assertEquals("accountuser@example.com", account.email)
+        assertEquals(null, account.subscription, "no subscription yet")
     }
 
     // -------------------------------------------------------------------------

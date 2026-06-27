@@ -52,8 +52,8 @@ fun Application.configureRouting(
         logoutAll(sessionService)
 
         // Account (authenticated)
-        getMe(usersService, subscriptionService)
-        deleteMe(usersService, sessionService, subscriptionService)
+        getAccount(usersService, subscriptionService)
+        deleteAccount(usersService, sessionService, subscriptionService)
 
         // Billing (authenticated)
         createCheckoutSession(usersService, subscriptionService)

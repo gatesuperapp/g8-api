@@ -54,11 +54,11 @@ fun Route.logoutAll(sessionService: ISessionService) {
 }
 
 /**
- * GET /v1/me — current user info + subscription status
+ * GET /v1/account — current user info + subscription status
  */
-fun Route.getMe(usersService: IUsersService, subscriptionService: ISubscriptionService) {
+fun Route.getAccount(usersService: IUsersService, subscriptionService: ISubscriptionService) {
     authenticate {
-        get("/v1/me") {
+        get("/v1/account") {
             val principal = call.principal<JWTPrincipal>()
                 ?: return@get call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
 
@@ -78,7 +78,7 @@ fun Route.getMe(usersService: IUsersService, subscriptionService: ISubscriptionS
                 )
             }
 
-            call.respond(MeResponse(
+            call.respond(AccountResponse(
                 email = user.email,
                 subscription = subscriptionResponse
             ))
@@ -87,7 +87,7 @@ fun Route.getMe(usersService: IUsersService, subscriptionService: ISubscriptionS
 }
 
 /**
- * DELETE /v1/me — RGPD account deletion.
+ * DELETE /v1/account — RGPD account deletion.
  *
  * Order matters: Stripe first, local state second. If Stripe is unreachable we still
  * cancel the local account (the user wants out, blocking on a Stripe outage would be
@@ -102,13 +102,13 @@ fun Route.getMe(usersService: IUsersService, subscriptionService: ISubscriptionS
  *  4. Soft-delete the user record (sets `deleted_at` — kept for audit, made invisible
  *     to all lookup queries by the partial unique index on `email`).
  */
-fun Route.deleteMe(
+fun Route.deleteAccount(
     usersService: IUsersService,
     sessionService: ISessionService,
     subscriptionService: ISubscriptionService,
 ) {
     authenticate {
-        delete("/v1/me") {
+        delete("/v1/account") {
             val principal = call.principal<JWTPrincipal>()
                 ?: return@delete call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
 
@@ -167,7 +167,7 @@ fun Route.deleteMe(
 }
 
 @Serializable
-data class MeResponse(
+data class AccountResponse(
     val email: String,
     val subscription: SubscriptionResponse? = null
 )
