@@ -1,62 +1,76 @@
-# G8-api
+# g8-api
 
-# Demonstrated in this POC
-- [x] Simple Get and Post endpoints
-- [x] Authentication and Authorization using a JWT
-- [x] Configuration file
-- [x] Logging
-- [x] Database Access
-- [x] Swagger documentation
-- [x] Tests
+Backend de l'app The Gate. Authentification passwordless (magic-link), gestion
+de comptes utilisateurs, intégration Stripe pour les abonnements.
 
-# How to test this app
+## Stack
 
-All endpoints can be called using Swagger. Swagger was also configured with default value so you can just execute the endpoints with little changes, except for the authentication step :)
+- **Kotlin 1.9.22** / **Ktor 2.3.7** (Netty), JVM 17
+- **PostgreSQL** en prod via **Exposed** + **HikariCP** (H2 in-memory pour les tests)
+- **Koin** pour la DI
+- **Stripe** SDK pour Checkout, Portal et webhooks
+- Build Gradle Kotlin DSL → fatjar via le plugin Ktor
 
-1. Configure gradle, on the root directory run :
-   1. `chmod +x ./gradlew`
-   2. `./gradlew build`
-   3. `./gradlew run`
-2. Navigate to `http://127.0.0.1:8080/swagger`, this should show the Swagger UI
-3. Use this simple test case to call all the endpoints
-   1. Get All Farmers, should return an empty list
-   2. Create a farmer, this should add a new farmer in the db
-   3. Creating a farmer should also print a log, search for the following log in the Run Terminal : `Farmer - Created a new farmer`
-   4. Get All Farmers, should now return a list with one item
-   5. Get Products for the authenticated farmer, should return an access forbidden error as you are not authenticated
-   6. Authenticate and Get JWT by providing the email/password, this should return a token in the response
-   7. Copy the token and click on the lock icon on the right side of the header of the `GET
-      /api/farmer/{id}/product` endpoint. This should show you a value field, past your token there and click `Authorize`
-   8. Now call again the Get products endpoint, it should return a list with a single item
+## Authentification
 
-Completing this test case should validate all the features check in the previous chapter.
+Magic-link → JWT HS256 (24 h) + refresh token rotaté (180 j, stocké hashé).
+Détection de réutilisation : si un refresh token déjà tourné est rejoué, toutes
+les sessions de l'utilisateur sont révoquées.
 
-# Notes
+Endpoints `/v1` :
 
-We are using h2 db for now.
+| Méthode | Path                              | Auth | Description                          |
+|---------|-----------------------------------|------|--------------------------------------|
+| POST    | `/v1/auth/magic-link/request`     | —    | Toujours 204 (anti-énumération)      |
+| POST    | `/v1/auth/magic-link/consume`     | —    | Crée user si absent, renvoie tokens  |
+| POST    | `/v1/auth/refresh`                | —    | Rotation du refresh token            |
+| POST    | `/v1/auth/logout`                 | JWT  | Révoque la session courante          |
+| GET     | `/v1/me`                          | JWT  | Profil + état d'abonnement           |
+| DELETE  | `/v1/me`                          | JWT  | Soft-delete + cancel Stripe          |
+| POST    | `/v1/billing/checkout-session`    | JWT  | Stripe Checkout                      |
+| POST    | `/v1/billing/portal-session`      | JWT  | Stripe Customer Portal               |
+| POST    | `/v1/webhooks/stripe`             | HMAC | Évènements Stripe (idempotents)      |
+| GET     | `/v1/health`                      | —    | Health check                         |
 
-**Not experimented yet**
-- Dependency injection with [Koin](https://insert-koin.io/docs/reference/koin-ktor/ktor/)
-- Database migrations with [Flyway](https://flywaydb.org/)
+## Build & run en local
 
-**Negative**
-- Best Devex is with Intellij Ultimate ~600 € / year
-- Low support for other IDEs
-- Swagger needs additional plugins to auto generate
-- No Identity component, needs to reimplement an auth process manually
-- Low traction on Reddit
-- No way to generate a project from the IDE for the community edition (had use a web tool on Jetbrains portal)
-- Needs to manually configure Build & Run Configuration
-- After adding a new dependency (`io.ktor:ktor-client-content-negotiation`) I had to go on File->Invalidate caches, and then click the button "Invalidate and restart" the IDE for it to be imported (and recognized by autocompletion). Seriously ???? Is this a Joke ???
-- No native database migration tool. A paying [Redgate tools, FlyWay](https://flywaydb.org/) is recommended.
-- Documentation is sometimes outdated (ex : For database integration with exposed)
+```bash
+./gradlew test                    # tests (H2 in-memory, aucun SMTP réel)
+./gradlew buildFatJar             # JAR → build/libs/g8-api.jar
+JWT_SECRET=dev-secret-only ./gradlew run
+```
 
-**Positive**
-- Documentation is nice but not always obvious (ex : Looking for how to use the config file does not explain all the requirements)
-- For the Native server, Ktor provides a logger that prints everything to the standard output
+Variables d'environnement reconnues :
 
-# TODO 
-- [ ] Configure a linter : [Ktlint](https://github.com/pinterest/ktlint)
-- [ ] Monitoring endpoint calls with a [log plugin](https://ktor.io/docs/events.html#custom-events)
-- [ ] Dependency injection with [Koin](https://insert-koin.io/docs/reference/koin-ktor/ktor/)
-- [ ] Database migrations with [Flyway](https://flywaydb.org/)
+| Variable               | Obligatoire | Défaut / Note                                |
+|------------------------|-------------|----------------------------------------------|
+| `JWT_SECRET`           | ✅          | Fail-fast au boot si absente                 |
+| `DATABASE_URL`         | non         | Format JDBC, par défaut Postgres localhost   |
+| `DATABASE_USER`        | non         |                                              |
+| `DATABASE_PASSWORD`    | non         |                                              |
+| `DATABASE_DRIVER`      | non         | Override JDBC driver (ex. H2 pour dev local) |
+| `STRIPE_SECRET_KEY`    | non         | Désactive Stripe si absent                   |
+| `STRIPE_WEBHOOK_SECRET`| non         | Requis pour valider la signature webhook     |
+| `STRIPE_PRICE_*`       | non         | IDs des prix g8 Fly / g8 Fab (mensuel/annuel)|
+| `SMTP_HOST` / `SMTP_PORT` | non      | Par défaut postfix localhost:25              |
+| `EMAIL_NOOP`           | non         | `true` en test pour ne pas envoyer d'email   |
+
+## Sécurité
+
+- `JWT_SECRET` fail-fast au boot, jamais en clair dans le repo
+- Magic-link 256 bits d'entropie, expiration 15 min, usage unique, stocké hashé SHA-256
+- Anti-énumération sur `/magic-link/request` (toujours 204)
+- Rate-limit Ktor par IP sur les endpoints publics
+- Headers de sécurité (HSTS, X-Frame, CSP)
+- HMAC Stripe-Signature vérifiée sur les webhooks
+- Logs structurés JSON avec hash des emails (RGPD)
+
+## Tests
+
+JUnit 4 + kotlin-test. La suite d'intégration `AuthIntegrationTest` couvre
+le flow auth complet, le rate-limit, l'anti-énumération, la détection de
+replay et les headers sécu.
+
+```bash
+./gradlew test
+```

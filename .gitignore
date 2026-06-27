@@ -38,3 +38,10 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Claude Code ###
+.claude/
+
+### Internal-only docs (audit, ops). Public README.md is intentionally allowed. ###
+AUDIT_BRIEF.md
+ops/**/README.md
