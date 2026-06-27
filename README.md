@@ -1,75 +1,76 @@
 # g8-api
 
-Backend de l'app The Gate. Authentification passwordless (magic-link), gestion
-de comptes utilisateurs, intégration Stripe pour les abonnements.
+Backend for The Gate app. Passwordless authentication (magic-link), user
+accounts, Stripe-based subscriptions.
 
 ## Stack
 
 - **Kotlin 1.9.22** / **Ktor 2.3.7** (Netty), JVM 17
-- **PostgreSQL** en prod via **Exposed** + **HikariCP** (H2 in-memory pour les tests)
-- **Koin** pour la DI
-- **Stripe** SDK pour Checkout, Portal et webhooks
-- Build Gradle Kotlin DSL → fatjar via le plugin Ktor
+- **PostgreSQL** in production via **Exposed** + **HikariCP** (in-memory H2 for tests)
+- **Koin** for DI
+- **Stripe** SDK for Checkout, Portal and webhooks
+- Gradle Kotlin DSL build → fat JAR via the Ktor plugin
 
-## Authentification
+## Authentication
 
-Magic-link → JWT HS256 (24 h) + refresh token rotaté (180 j, stocké hashé).
-Détection de réutilisation : si un refresh token déjà tourné est rejoué, toutes
-les sessions de l'utilisateur sont révoquées.
+Magic-link → JWT HS256 (24h) + rotating refresh token (180d, hashed at rest).
+Replay detection: if a refresh token that has already been rotated is
+presented again, every session for that user is revoked.
 
-Endpoints `/v1` :
+`/v1` endpoints:
 
-| Méthode | Path                              | Auth | Description                          |
-|---------|-----------------------------------|------|--------------------------------------|
-| POST    | `/v1/auth/magic-link/request`     | —    | Toujours 204 (anti-énumération)      |
-| POST    | `/v1/auth/magic-link/consume`     | —    | Crée user si absent, renvoie tokens  |
-| POST    | `/v1/auth/refresh`                | —    | Rotation du refresh token            |
-| POST    | `/v1/auth/logout`                 | JWT  | Révoque la session courante          |
-| GET     | `/v1/me`                          | JWT  | Profil + état d'abonnement           |
-| DELETE  | `/v1/me`                          | JWT  | Soft-delete + cancel Stripe          |
-| POST    | `/v1/billing/checkout-session`    | JWT  | Stripe Checkout                      |
-| POST    | `/v1/billing/portal-session`      | JWT  | Stripe Customer Portal               |
-| POST    | `/v1/webhooks/stripe`             | HMAC | Évènements Stripe (idempotents)      |
-| GET     | `/v1/health`                      | —    | Health check                         |
+| Method  | Path                              | Auth | Description                              |
+|---------|-----------------------------------|------|------------------------------------------|
+| POST    | `/v1/auth/magic-link/request`     | —    | Always 204 (anti-enumeration)            |
+| POST    | `/v1/auth/magic-link/consume`     | —    | Creates user if missing, returns tokens  |
+| POST    | `/v1/auth/refresh`                | —    | Rotates the refresh token                |
+| POST    | `/v1/auth/logout`                 | JWT  | Revokes the current session              |
+| GET     | `/v1/me`                          | JWT  | Profile + subscription state             |
+| DELETE  | `/v1/me`                          | JWT  | Soft-delete + cancel Stripe              |
+| POST    | `/v1/billing/checkout-session`    | JWT  | Stripe Checkout                          |
+| POST    | `/v1/billing/portal-session`      | JWT  | Stripe Customer Portal                   |
+| POST    | `/v1/webhooks/stripe`             | HMAC | Stripe events (idempotent)               |
+| GET     | `/v1/health`                      | —    | Health check                             |
 
-## Build & run en local
+## Build & run locally
 
 ```bash
-./gradlew test                    # tests (H2 in-memory, aucun SMTP réel)
+./gradlew test                    # tests (in-memory H2, no real SMTP)
 ./gradlew buildFatJar             # JAR → build/libs/g8-api.jar
 JWT_SECRET=dev-secret-only ./gradlew run
 ```
 
-Variables d'environnement reconnues :
+Environment variables:
 
-| Variable               | Obligatoire | Défaut / Note                                |
-|------------------------|-------------|----------------------------------------------|
-| `JWT_SECRET`           | ✅          | Fail-fast au boot si absente                 |
-| `DATABASE_URL`         | non         | Format JDBC, par défaut Postgres localhost   |
-| `DATABASE_USER`        | non         |                                              |
-| `DATABASE_PASSWORD`    | non         |                                              |
-| `DATABASE_DRIVER`      | non         | Override JDBC driver (ex. H2 pour dev local) |
-| `STRIPE_SECRET_KEY`    | non         | Désactive Stripe si absent                   |
-| `STRIPE_WEBHOOK_SECRET`| non         | Requis pour valider la signature webhook     |
-| `STRIPE_PRICE_*`       | non         | IDs des prix g8 Fly / g8 Fab (mensuel/annuel)|
-| `SMTP_HOST` / `SMTP_PORT` | non      | Par défaut postfix localhost:25              |
-| `EMAIL_NOOP`           | non         | `true` en test pour ne pas envoyer d'email   |
+| Variable                  | Required | Default / note                                  |
+|---------------------------|----------|-------------------------------------------------|
+| `JWT_SECRET`              | yes      | Fail-fast at boot if missing                    |
+| `DATABASE_URL`            | no       | JDBC URL, defaults to Postgres on localhost     |
+| `DATABASE_USER`           | no       |                                                 |
+| `DATABASE_PASSWORD`       | no       |                                                 |
+| `DATABASE_DRIVER`         | no       | Override the JDBC driver (e.g. H2 for local dev)|
+| `STRIPE_SECRET_KEY`       | no       | Stripe routes are disabled if absent            |
+| `STRIPE_WEBHOOK_SECRET`   | no       | Required to verify webhook signatures           |
+| `STRIPE_PRICE_*`          | no       | Price IDs (monthly / yearly plans)              |
+| `SMTP_HOST` / `SMTP_PORT` | no       | Defaults to postfix on localhost:25             |
+| `EMAIL_NOOP`              | no       | `true` in tests to skip outgoing mail           |
 
-## Sécurité
+## Security
 
-- `JWT_SECRET` fail-fast au boot, jamais en clair dans le repo
-- Magic-link 256 bits d'entropie, expiration 15 min, usage unique, stocké hashé SHA-256
-- Anti-énumération sur `/magic-link/request` (toujours 204)
-- Rate-limit Ktor par IP sur les endpoints publics
-- Headers de sécurité (HSTS, X-Frame, CSP)
-- HMAC Stripe-Signature vérifiée sur les webhooks
-- Logs structurés JSON avec hash des emails (RGPD)
+- `JWT_SECRET` fail-fast at boot, never committed in clear text
+- Magic-link tokens: 256 bits of entropy, 15-minute expiry, single-use,
+  SHA-256-hashed at rest
+- Anti-enumeration on `/magic-link/request` (always 204)
+- Ktor per-IP rate-limit on public endpoints
+- Security headers (HSTS, X-Frame, CSP)
+- Stripe webhook HMAC signature verified
+- Structured JSON logs with hashed emails (GDPR)
 
 ## Tests
 
-JUnit 4 + kotlin-test. La suite d'intégration `AuthIntegrationTest` couvre
-le flow auth complet, le rate-limit, l'anti-énumération, la détection de
-replay et les headers sécu.
+JUnit 4 + kotlin-test. The `AuthIntegrationTest` integration suite covers
+the full auth flow, rate limiting, anti-enumeration, replay detection and
+security headers.
 
 ```bash
 ./gradlew test
