@@ -79,6 +79,29 @@ class AuthLogger {
             put("ip", truncateIp(ip))
         }
 
+    /**
+     * Emitted when a Ktor RateLimit bucket is exhausted (response 429).
+     *
+     * - [jail] is the [RateLimitName] that fired (`public-auth`, `billing`, …).
+     * - [key] is the bucket key (IP for public jails, user_id for JWT jails) —
+     *   useful to correlate at debug time but not always banable.
+     * - [ip] is always the real client IP, so a fail2ban jail can bind a ban
+     *   to it even when the bucket was keyed by user_id.
+     * - [path] helps tell apart "user probing all my endpoints" from "one
+     *   endpoint under burst".
+     *
+     * IP is kept *full* here (not truncated): a rate-limit hit is by
+     * definition an abuse signal, and the same justification used for
+     * `magic_link.consume_failed` / `auth.refresh` failures applies.
+     */
+    fun rateLimitExceeded(jail: String, key: String, ip: String, path: String) =
+        emit("rate_limit.exceeded") {
+            put("jail", jail)
+            put("key", key)
+            put("ip", ip)
+            put("path", path)
+        }
+
     private inline fun emit(event: String, crossinline fields: kotlinx.serialization.json.JsonObjectBuilder.() -> Unit) {
         log.info(jsonRecord(event, fields))
     }

@@ -1,9 +1,11 @@
 package com.a4a.g8api.plugins
 
+import com.a4a.g8api.services.AuthLogger
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.ratelimit.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
@@ -31,6 +33,10 @@ fun Application.configureRateLimit() {
     // Client IP is resolved via `ApplicationCall.clientIp()` (see ClientIp.kt) which
     // only honors X-Forwarded-For when the TCP peer is the loopback reverse proxy,
     // and always takes the LAST entry — immune to client-supplied X-F-F spoofing.
+    //
+    // AuthLogger is stateless (only an SLF4J handle inside) so allocating one here,
+    // before Koin is wired, is safe — no shared state to worry about.
+    val authLogger = AuthLogger()
     install(RateLimit) {
         // 60 magic link requests per hour per IP — generous to accommodate carrier-grade
         // NAT (mobile users behind the same egress IP). The real anti-spam defense is the
@@ -38,6 +44,12 @@ fun Application.configureRateLimit() {
         register(RateLimitNames.PUBLIC_AUTH) {
             rateLimiter(limit = 60, refillPeriod = 1.hours)
             requestKey { call -> call.clientIp() }
+            modifyResponse { call, state ->
+                if (state is RateLimiter.State.Exhausted) {
+                    val ip = call.clientIp()
+                    authLogger.rateLimitExceeded("public-auth", key = ip, ip = ip, path = call.request.uri)
+                }
+            }
         }
 
         // 20 consume attempts per minute per IP. The token has 256 bits of entropy
@@ -48,12 +60,24 @@ fun Application.configureRateLimit() {
         register(RateLimitNames.MAGIC_LINK_CONSUME) {
             rateLimiter(limit = 20, refillPeriod = 1.minutes)
             requestKey { call -> call.clientIp() }
+            modifyResponse { call, state ->
+                if (state is RateLimiter.State.Exhausted) {
+                    val ip = call.clientIp()
+                    authLogger.rateLimitExceeded("magic-link-consume", key = ip, ip = ip, path = call.request.uri)
+                }
+            }
         }
 
         // 10 refresh attempts per minute per IP (brute-force protection)
         register(RateLimitNames.REFRESH) {
             rateLimiter(limit = 10, refillPeriod = 1.minutes)
             requestKey { call -> call.clientIp() }
+            modifyResponse { call, state ->
+                if (state is RateLimiter.State.Exhausted) {
+                    val ip = call.clientIp()
+                    authLogger.rateLimitExceeded("refresh", key = ip, ip = ip, path = call.request.uri)
+                }
+            }
         }
 
         // 60 /v1/account hits per minute per user_id — generous, the mobile
@@ -63,6 +87,16 @@ fun Application.configureRateLimit() {
         register(RateLimitNames.ACCOUNT) {
             rateLimiter(limit = 60, refillPeriod = 1.minutes)
             requestKey { call -> requireUserIdKey(call, jail = "account") }
+            modifyResponse { call, state ->
+                if (state is RateLimiter.State.Exhausted) {
+                    authLogger.rateLimitExceeded(
+                        jail = "account",
+                        key = requireUserIdKey(call, jail = "account"),
+                        ip = call.clientIp(),
+                        path = call.request.uri,
+                    )
+                }
+            }
         }
 
         // 5 billing actions per hour per user_id. A legit user creates one
@@ -72,6 +106,16 @@ fun Application.configureRateLimit() {
         register(RateLimitNames.BILLING) {
             rateLimiter(limit = 5, refillPeriod = 1.hours)
             requestKey { call -> requireUserIdKey(call, jail = "billing") }
+            modifyResponse { call, state ->
+                if (state is RateLimiter.State.Exhausted) {
+                    authLogger.rateLimitExceeded(
+                        jail = "billing",
+                        key = requireUserIdKey(call, jail = "billing"),
+                        ip = call.clientIp(),
+                        path = call.request.uri,
+                    )
+                }
+            }
         }
     }
 }
