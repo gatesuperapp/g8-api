@@ -3,6 +3,8 @@ package com.a4a.g8api.routes
 import com.a4a.g8api.database.ISubscriptionService
 import com.a4a.g8api.database.IUsersService
 import com.a4a.g8api.models.ErrorResponse
+import com.a4a.g8api.plugins.RateLimitNames
+import io.ktor.server.plugins.ratelimit.rateLimit
 import com.stripe.Stripe
 import com.stripe.exception.StripeException
 import com.stripe.model.checkout.Session as StripeSession
@@ -23,14 +25,16 @@ import java.util.UUID
 private val billingLog = LoggerFactory.getLogger("billing")
 
 /**
- * POST /v1/billing/checkout-session — create Stripe Checkout Session
+ * POST /v1/billing/checkout-session — create Stripe Checkout Session.
+ * Per-user rate limit (5/h) — see [RateLimitNames.BILLING].
  */
 fun Route.createCheckoutSession(
     usersService: IUsersService,
     subscriptionService: ISubscriptionService
 ) {
     authenticate {
-        post("/v1/billing/checkout-session") {
+        rateLimit(RateLimitNames.BILLING) {
+            post("/v1/billing/checkout-session") {
             val stripeKey = System.getenv("STRIPE_SECRET_KEY")
             if (stripeKey.isNullOrBlank()) {
                 return@post call.respond(HttpStatusCode.InternalServerError, ErrorResponse("Stripe not configured"))
@@ -105,16 +109,19 @@ fun Route.createCheckoutSession(
             }
 
             call.respond(CheckoutResponse(url = session.url))
+            }
         }
     }
 }
 
 /**
- * POST /v1/billing/portal-session — create Stripe Customer Portal session
+ * POST /v1/billing/portal-session — create Stripe Customer Portal session.
+ * Per-user rate limit (5/h) — see [RateLimitNames.BILLING].
  */
 fun Route.createPortalSession(usersService: IUsersService) {
     authenticate {
-        post("/v1/billing/portal-session") {
+        rateLimit(RateLimitNames.BILLING) {
+            post("/v1/billing/portal-session") {
             val stripeKey = System.getenv("STRIPE_SECRET_KEY")
             if (stripeKey.isNullOrBlank()) {
                 return@post call.respond(HttpStatusCode.InternalServerError, ErrorResponse("Stripe not configured"))
@@ -150,6 +157,7 @@ fun Route.createPortalSession(usersService: IUsersService) {
             }
 
             call.respond(CheckoutResponse(url = session.url))
+            }
         }
     }
 }

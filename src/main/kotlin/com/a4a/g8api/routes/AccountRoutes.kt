@@ -4,6 +4,8 @@ import com.a4a.g8api.database.ISessionService
 import com.a4a.g8api.database.ISubscriptionService
 import com.a4a.g8api.database.IUsersService
 import com.a4a.g8api.models.ErrorResponse
+import com.a4a.g8api.plugins.RateLimitNames
+import io.ktor.server.plugins.ratelimit.rateLimit
 import com.stripe.Stripe
 import com.stripe.exception.StripeException
 import com.stripe.model.Customer
@@ -54,11 +56,13 @@ fun Route.logoutAll(sessionService: ISessionService) {
 }
 
 /**
- * GET /v1/account — current user info + subscription status
+ * GET /v1/account — current user info + subscription status.
+ * Per-user rate limit (60/min) — see [RateLimitNames.ACCOUNT].
  */
 fun Route.getAccount(usersService: IUsersService, subscriptionService: ISubscriptionService) {
     authenticate {
-        get("/v1/account") {
+        rateLimit(RateLimitNames.ACCOUNT) {
+            get("/v1/account") {
             val principal = call.principal<JWTPrincipal>()
                 ?: return@get call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
 
@@ -82,6 +86,7 @@ fun Route.getAccount(usersService: IUsersService, subscriptionService: ISubscrip
                 email = user.email,
                 subscription = subscriptionResponse
             ))
+            }
         }
     }
 }
@@ -108,7 +113,8 @@ fun Route.deleteAccount(
     subscriptionService: ISubscriptionService,
 ) {
     authenticate {
-        delete("/v1/account") {
+        rateLimit(RateLimitNames.ACCOUNT) {
+            delete("/v1/account") {
             val principal = call.principal<JWTPrincipal>()
                 ?: return@delete call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
 
@@ -162,6 +168,7 @@ fun Route.deleteAccount(
             usersService.softDeleteUser(userId)
 
             call.respond(HttpStatusCode.NoContent)
+            }
         }
     }
 }

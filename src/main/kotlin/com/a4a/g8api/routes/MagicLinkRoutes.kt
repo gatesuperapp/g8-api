@@ -8,6 +8,7 @@ import com.a4a.g8api.plugins.clientIp
 import com.a4a.g8api.services.AuthLogger
 import com.a4a.g8api.services.EmailRateLimiter
 import com.a4a.g8api.services.EmailService
+import com.a4a.g8api.services.isValidEmail
 import com.a4a.g8api.viewmodels.MagicLinkRequestViewModel
 import com.a4a.g8api.viewmodels.SignInResponseViewModel
 import com.auth0.jwt.JWT
@@ -34,8 +35,10 @@ fun Route.requestMagicLink(
         val email = request.email.lowercase().trim()
         val ipAddress = call.clientIp()
 
-        // Always return 204 — never reveal if email exists (anti-enumeration)
-        if (email.isBlank() || !email.contains("@") || !email.contains(".")) {
+        // Always return 204 — never reveal if email exists (anti-enumeration).
+        // isValidEmail caps length (RFC 5321), forbids CR/LF (header-injection
+        // guard for SMTP), and enforces a sane shape. See EmailValidator.kt.
+        if (!isValidEmail(email)) {
             call.respond(HttpStatusCode.NoContent)
             return@post
         }
