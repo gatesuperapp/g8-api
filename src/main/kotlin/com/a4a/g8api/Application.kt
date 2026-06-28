@@ -29,6 +29,7 @@ fun Application.module() {
 
     configureSecurityHeaders()
     configureErrorHandling()
+    configureMaxRequestSize()
     configureSecurity()
     configureRateLimit()
     configureSerialization()
