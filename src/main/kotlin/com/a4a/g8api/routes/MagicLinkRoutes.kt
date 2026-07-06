@@ -55,7 +55,12 @@ fun Route.requestMagicLink(
         val purpose = if (existingUser != null) "login" else "signup"
 
         val token = magicLinkService.createToken(email, purpose)
-        val sent = emailService.sendMagicLinkEmail(email, token, purpose, request.locale)
+        // Prefer the explicit body locale (set by newer clients), fall back to the
+        // Accept-Language header (set globally by our HttpClient default request) so
+        // users on locale-aware clients still get their language even when the body
+        // field is null (e.g. legacy client before we started sending it).
+        val locale = request.locale ?: call.request.headers[HttpHeaders.AcceptLanguage]
+        val sent = emailService.sendMagicLinkEmail(email, token, purpose, locale)
         if (!sent) {
             log.warn("magic-link send failed for email=$email purpose=$purpose")
         }
