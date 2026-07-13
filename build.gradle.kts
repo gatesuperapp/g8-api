@@ -65,10 +65,10 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:0.47.0")
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.47.0")
     // H2 kept for the test suite (in-memory, MODE=PostgreSQL).
-    implementation("com.h2database:h2:2.2.224")
+    implementation("com.h2database:h2:2.4.240")
     // Production database — read DATABASE_URL/USER/PASSWORD env vars (see application.conf).
-    implementation("org.postgresql:postgresql:42.7.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+    implementation("org.postgresql:postgresql:42.7.13")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.8.0")
     // Dependency Injection
     //Enables external provisioning of component dependencies, fostering modularity and flexibility in development.
     implementation("io.insert-koin:koin-ktor:$koinKtor_version")
@@ -78,7 +78,7 @@ dependencies {
     // Stripe
     implementation("com.stripe:stripe-java:26.1.0")
     // Mail (SMTP via Postfix on localhost)
-    implementation("com.sun.mail:jakarta.mail:2.0.1")
+    implementation("com.sun.mail:jakarta.mail:2.0.2")
 }
 
 
