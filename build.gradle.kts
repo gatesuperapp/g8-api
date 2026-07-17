@@ -25,9 +25,22 @@ tasks.withType<JavaCompile> {
 
 tasks.withType<Test> {
     useJUnit()
-    // Tests run against an in-memory H2 (no file on disk) and never reach a real SMTP.
+    // Tests run against a Testcontainers-managed Postgres (Docker required — Colima,
+    // OrbStack or Docker Desktop) and never reach a real SMTP.
     environment("JWT_SECRET", "test-secret-only-for-junit-runs-not-real")
     environment("EMAIL_NOOP", "true")
+    // Colima puts the Docker socket under $HOME/.colima instead of /var/run/docker.sock,
+    // which Testcontainers' default probing misses. Point DOCKER_HOST at it when we
+    // see the socket and the user hasn't overridden it. Ryuk (Testcontainers' cleanup
+    // sidecar) mounts the socket inside itself using the host path; the Colima VM only
+    // exposes it as /var/run/docker.sock internally, so override the mount source.
+    if (System.getenv("DOCKER_HOST").isNullOrEmpty()) {
+        val colimaSocket = file("${System.getProperty("user.home")}/.colima/default/docker.sock")
+        if (colimaSocket.exists()) {
+            environment("DOCKER_HOST", "unix://${colimaSocket.absolutePath}")
+            environment("TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE", "/var/run/docker.sock")
+        }
+    }
 }
 
 
@@ -60,12 +73,15 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    // Testcontainers spins up a real Postgres 16 in Docker for the integration tests
+    // so the test schema/dialect matches production. Uses docker-java 3.4.2 under the
+    // hood, which needs `api.version=1.44` in src/test/resources/docker-java.properties
+    // to satisfy Docker Engine 27+'s minimum API version.
+    testImplementation("org.testcontainers:postgresql:1.21.3")
     implementation("org.jetbrains.exposed:exposed-core:0.47.0")
     implementation("org.jetbrains.exposed:exposed-dao:0.47.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.47.0")
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.47.0")
-    // H2 kept for the test suite (in-memory, MODE=PostgreSQL).
-    implementation("com.h2database:h2:2.2.224")
     // Production database — read DATABASE_URL/USER/PASSWORD env vars (see application.conf).
     implementation("org.postgresql:postgresql:42.7.4")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")

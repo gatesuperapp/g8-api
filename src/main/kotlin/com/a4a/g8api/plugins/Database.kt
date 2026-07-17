@@ -12,8 +12,6 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.vendors.PostgreSQLDialect
-import org.jetbrains.exposed.sql.vendors.currentDialect
 
 
 private fun provideDataSource(
@@ -25,8 +23,8 @@ private fun provideDataSource(
     val hikariConfig = HikariConfig().apply {
         driverClassName = driverClass
         jdbcUrl = url
-        // Only set credentials when actually provided. Test config + local H2 file
-        // both run with empty creds — passing "" to Hikari makes Postgres refuse.
+        // Only set credentials when actually provided. Passing an empty string to
+        // Hikari makes Postgres refuse the connection.
         if (!user.isNullOrEmpty()) username = user
         if (!pwd.isNullOrEmpty()) password = pwd
         maximumPoolSize = 3
@@ -57,69 +55,62 @@ fun Application.configureDatabase() {
 
 /**
  * Replace any non-partial uniqueness on `users.email` with a partial unique index that
- * excludes soft-deleted rows. This lets a soft-deleted account's email be re-used by a
- * brand-new signup — without the partial form, the legacy unique constraint blocks
- * the INSERT.
+ * excludes soft-deleted rows (`… WHERE deleted_at IS NULL`). Without the partial form,
+ * a legacy plain-unique constraint blocks new signups from re-using a soft-deleted
+ * account's email.
  *
- * Dispatched per dialect:
- *  - **Postgres** (production): `… WHERE deleted_at IS NULL`. We first drop any unique
- *    CONSTRAINT on `users.email` via `ALTER TABLE … DROP CONSTRAINT` — dropping the
- *    underlying index directly is forbidden when a constraint owns it (Postgres errors
- *    with "constraint X requires it"). Then we sweep any leftover non-partial unique
- *    INDEX that wasn't backed by a constraint. Both loops inspect pg_catalog rather
- *    than hard-coding names, so future Exposed-version renames don't break us.
- *  - **H2** (tests run with `MODE=PostgreSQL`): keeps a plain unique index, since H2
- *    doesn't support partial indexes. Tests still get duplicate-email protection.
+ * Two-step teardown before the CREATE:
+ *  1. Drop any unique CONSTRAINT on `users.email` via `ALTER TABLE … DROP CONSTRAINT`
+ *     — dropping the underlying index directly is forbidden when a constraint owns it
+ *     (Postgres errors with "constraint X requires it").
+ *  2. Sweep any leftover non-partial unique INDEX not backed by a constraint.
+ *
+ * Both loops inspect pg_catalog rather than hard-coding names, so future Exposed-version
+ * renames don't break us.
  */
 private fun ensureUsersEmailUniquenessIndex() {
-    if (currentDialect is PostgreSQLDialect) {
-        exec("""
-            DO ${'$'}${'$'}
-            DECLARE name text;
-            BEGIN
-                -- Step 1: drop any non-partial unique CONSTRAINT on users.email.
-                -- Dropping the constraint auto-drops its underlying index.
-                FOR name IN
-                    SELECT con.conname
-                    FROM pg_constraint con
-                    JOIN pg_class t ON t.oid = con.conrelid
-                    JOIN pg_attribute a
-                      ON a.attrelid = t.oid AND a.attnum = ANY(con.conkey)
-                    WHERE t.relname = 'users'
-                      AND a.attname = 'email'
-                      AND con.contype = 'u'
-                LOOP
-                    EXECUTE 'ALTER TABLE users DROP CONSTRAINT ' || quote_ident(name);
-                END LOOP;
+    exec("""
+        DO ${'$'}${'$'}
+        DECLARE name text;
+        BEGIN
+            -- Step 1: drop any non-partial unique CONSTRAINT on users.email.
+            -- Dropping the constraint auto-drops its underlying index.
+            FOR name IN
+                SELECT con.conname
+                FROM pg_constraint con
+                JOIN pg_class t ON t.oid = con.conrelid
+                JOIN pg_attribute a
+                  ON a.attrelid = t.oid AND a.attnum = ANY(con.conkey)
+                WHERE t.relname = 'users'
+                  AND a.attname = 'email'
+                  AND con.contype = 'u'
+            LOOP
+                EXECUTE 'ALTER TABLE users DROP CONSTRAINT ' || quote_ident(name);
+            END LOOP;
 
-                -- Step 2: drop any remaining non-partial unique INDEX (not backed by
-                -- a constraint — those were already removed in step 1).
-                FOR name IN
-                    SELECT i.relname
-                    FROM pg_index x
-                    JOIN pg_class c ON c.oid = x.indrelid
-                    JOIN pg_class i ON i.oid = x.indexrelid
-                    JOIN pg_attribute a
-                      ON a.attrelid = c.oid AND a.attnum = ANY(x.indkey)
-                    WHERE c.relname = 'users'
-                      AND a.attname = 'email'
-                      AND x.indisunique
-                      AND x.indpred IS NULL
-                LOOP
-                    EXECUTE 'DROP INDEX ' || quote_ident(name);
-                END LOOP;
-            END
-            ${'$'}${'$'};
-        """.trimIndent())
-        exec(
-            "CREATE UNIQUE INDEX IF NOT EXISTS users_email_active_unique " +
-                "ON users (email) WHERE deleted_at IS NULL"
-        )
-    } else {
-        exec(
-            "CREATE UNIQUE INDEX IF NOT EXISTS users_email_unique ON users (email)"
-        )
-    }
+            -- Step 2: drop any remaining non-partial unique INDEX (not backed by
+            -- a constraint — those were already removed in step 1).
+            FOR name IN
+                SELECT i.relname
+                FROM pg_index x
+                JOIN pg_class c ON c.oid = x.indrelid
+                JOIN pg_class i ON i.oid = x.indexrelid
+                JOIN pg_attribute a
+                  ON a.attrelid = c.oid AND a.attnum = ANY(x.indkey)
+                WHERE c.relname = 'users'
+                  AND a.attname = 'email'
+                  AND x.indisunique
+                  AND x.indpred IS NULL
+            LOOP
+                EXECUTE 'DROP INDEX ' || quote_ident(name);
+            END LOOP;
+        END
+        ${'$'}${'$'};
+    """.trimIndent())
+    exec(
+        "CREATE UNIQUE INDEX IF NOT EXISTS users_email_active_unique " +
+            "ON users (email) WHERE deleted_at IS NULL"
+    )
 }
 
 private fun exec(sql: String) {

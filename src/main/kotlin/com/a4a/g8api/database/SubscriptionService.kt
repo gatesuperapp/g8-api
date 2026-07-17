@@ -127,9 +127,8 @@ class SubscriptionService : ISubscriptionService {
     }
 
     override suspend fun markWebhookProcessed(eventId: String, eventType: String) = dbQuery {
-        // H2 (in standard mode) doesn't support INSERT IGNORE — we rely on the upstream
-        // isWebhookProcessed() check in WebhookRoutes to avoid duplicate inserts, and
-        // swallow the rare race-condition PK collision here as a belt-and-braces.
+        // Duplicate-insert protection: WebhookRoutes calls isWebhookProcessed() first,
+        // and we swallow the rare race-condition PK collision here as a belt-and-braces.
         val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)
         try {
             WebhookEvents.insert {
