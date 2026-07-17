@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.com.intellij.openapi.vfs.StandardFileSystems.jar
-
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
@@ -7,14 +5,14 @@ val koinKtor_version: String by project
 val hikaricp_version: String by project
 
 plugins {
-    kotlin("jvm") version "1.9.22"
-    id("io.ktor.plugin") version "2.3.7"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
+    kotlin("jvm") version "2.3.21"
+    id("io.ktor.plugin") version "3.5.1"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.3.21"
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "17"
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
 
@@ -71,20 +69,20 @@ dependencies {
     implementation("io.ktor:ktor-server-default-headers-jvm")
     implementation("io.ktor:ktor-server-status-pages-jvm")
     implementation("ch.qos.logback:logback-classic:$logback_version")
-    testImplementation("io.ktor:ktor-server-tests-jvm")
+    testImplementation("io.ktor:ktor-server-test-host-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     // Testcontainers spins up a real Postgres 16 in Docker for the integration tests
     // so the test schema/dialect matches production. Uses docker-java 3.4.2 under the
     // hood, which needs `api.version=1.44` in src/test/resources/docker-java.properties
     // to satisfy Docker Engine 27+'s minimum API version.
     testImplementation("org.testcontainers:postgresql:1.21.3")
-    implementation("org.jetbrains.exposed:exposed-core:0.47.0")
-    implementation("org.jetbrains.exposed:exposed-dao:0.47.0")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.47.0")
-    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.47.0")
+    implementation("org.jetbrains.exposed:exposed-core:0.61.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.61.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.61.0")
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.61.0")
     // Production database — read DATABASE_URL/USER/PASSWORD env vars (see application.conf).
     implementation("org.postgresql:postgresql:42.7.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
     // Dependency Injection
     //Enables external provisioning of component dependencies, fostering modularity and flexibility in development.
     implementation("io.insert-koin:koin-ktor:$koinKtor_version")

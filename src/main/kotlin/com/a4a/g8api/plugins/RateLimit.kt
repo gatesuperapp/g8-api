@@ -123,15 +123,17 @@ fun Application.configureRateLimit() {
 /**
  * Pulls the JWT user_id out of the principal to key a rate-limit bucket on it.
  *
- * The Ktor rate-limit plugin runs its `requestKey` after `authenticate` has
- * populated the principal — so on a properly wired route there's always a
- * JWTPrincipal. If we somehow end up here without one it's a wiring bug
- * (registered the RL on an unauthenticated route), and we'd rather fail loud
- * than silently bucket everyone into the same global slot.
+ * In Ktor 3 the rate-limit interceptor fires *before* Authentication finishes
+ * populating the principal, so `call.principal<JWTPrincipal>()` is null at
+ * requestKey time — even on `authenticate { rateLimit { … } }` routes. When
+ * that happens we fall back to keying on client IP so unauthenticated probes
+ * still get bucketed (auth then returns 401 downstream). Once a principal *is*
+ * present (Ktor 2 semantics or a later Ktor 3 pipeline hook) we prefer the
+ * user_id — a stolen JWT rotating IPs stays the same user.
  */
 private fun requireUserIdKey(call: ApplicationCall, jail: String): String {
     val principal = call.principal<JWTPrincipal>()
-        ?: error("RateLimit '$jail' applied to a route without JWT auth — fix the routing wiring")
+        ?: return "ip:${call.clientIp()}"
     return principal.getClaim("id", String::class)
         ?: error("RateLimit '$jail' got a JWT with no 'id' claim — token issuer is broken")
 }
