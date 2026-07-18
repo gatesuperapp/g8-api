@@ -23,22 +23,12 @@ tasks.withType<JavaCompile> {
 
 tasks.withType<Test> {
     useJUnit()
-    // Tests run against a Testcontainers-managed Postgres (Docker required — Colima,
-    // OrbStack or Docker Desktop) and never reach a real SMTP.
+    // Tests run against a Testcontainers-managed Postgres and never reach a real SMTP.
+    // Requires a Docker daemon reachable at /var/run/docker.sock — OrbStack and
+    // Docker Desktop wire that path automatically. On runtimes that expose the socket
+    // elsewhere (e.g. Colima), export DOCKER_HOST before running ./gradlew test.
     environment("JWT_SECRET", "test-secret-only-for-junit-runs-not-real")
     environment("EMAIL_NOOP", "true")
-    // Colima puts the Docker socket under $HOME/.colima instead of /var/run/docker.sock,
-    // which Testcontainers' default probing misses. Point DOCKER_HOST at it when we
-    // see the socket and the user hasn't overridden it. Ryuk (Testcontainers' cleanup
-    // sidecar) mounts the socket inside itself using the host path; the Colima VM only
-    // exposes it as /var/run/docker.sock internally, so override the mount source.
-    if (System.getenv("DOCKER_HOST").isNullOrEmpty()) {
-        val colimaSocket = file("${System.getProperty("user.home")}/.colima/default/docker.sock")
-        if (colimaSocket.exists()) {
-            environment("DOCKER_HOST", "unix://${colimaSocket.absolutePath}")
-            environment("TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE", "/var/run/docker.sock")
-        }
-    }
 }
 
 
