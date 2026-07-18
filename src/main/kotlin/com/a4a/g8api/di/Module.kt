@@ -8,6 +8,7 @@ import com.a4a.g8api.database.MagicLinkService
 import com.a4a.g8api.database.SessionService
 import com.a4a.g8api.database.SubscriptionService
 import com.a4a.g8api.database.UsersService
+import com.a4a.g8api.services.AbuseDetector
 import com.a4a.g8api.services.AuthLogger
 import com.a4a.g8api.services.CleanupService
 import com.a4a.g8api.services.EmailRateLimiter
@@ -23,4 +24,5 @@ val appModule = module {
     single { EmailRateLimiter() }
     single { AuthLogger() }
     single { CleanupService() }
+    single { AbuseDetector() }
 }

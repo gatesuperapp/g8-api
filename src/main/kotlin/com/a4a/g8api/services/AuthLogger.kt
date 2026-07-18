@@ -102,6 +102,18 @@ class AuthLogger {
             put("path", path)
         }
 
+    /**
+     * Emitted by the maintenance loop when [AbuseDetector] flags a user_id that
+     * has been seen from an unusual number of distinct client IPs inside the
+     * sliding window. Full user_id is kept — the point of this event is that a
+     * human (or paging integration) needs to look at this account.
+     */
+    fun abuseSuspected(userId: UUID, ipCount: Int) =
+        emit("abuse.suspected") {
+            put("user_id", userId.toString())
+            put("ip_count", ipCount)
+        }
+
     private inline fun emit(event: String, crossinline fields: kotlinx.serialization.json.JsonObjectBuilder.() -> Unit) {
         log.info(jsonRecord(event, fields))
     }
