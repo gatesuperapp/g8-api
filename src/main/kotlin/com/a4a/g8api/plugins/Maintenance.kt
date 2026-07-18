@@ -1,5 +1,7 @@
 package com.a4a.g8api.plugins
 
+import com.a4a.g8api.services.AbuseDetector
+import com.a4a.g8api.services.AuthLogger
 import com.a4a.g8api.services.CleanupService
 import io.ktor.server.application.*
 import kotlinx.coroutines.delay
@@ -51,22 +53,30 @@ fun validateHealthcheckUrl(url: String?): String? {
 /**
  * Background maintenance tasks running inside the Ktor application coroutine scope.
  *
- * Two coroutines are launched at boot:
+ * Three coroutines are launched at boot:
  * - **Cleanup** — calls [CleanupService.runCleanup] every 24h, then pings the
  *   `HC_PING_URL_CLEANUP` URL on success (or `/fail` on exception). The first run
  *   happens after a short delay so app boot stays snappy.
  * - **Heartbeat** — pings `HC_PING_URL_HEARTBEAT` every 5 minutes so Healthchecks.io
  *   knows the API is alive. Only launched if the env var is set.
+ * - **Abuse scan** — polls [AbuseDetector] every 5 minutes for user_ids that have
+ *   been hit from too many distinct IPs (residual gap left by the Ktor 3 rate-limit
+ *   fallback in [RateLimit]). Clean scan pings `HC_PING_URL_ABUSE`, suspect scan
+ *   pings `HC_PING_URL_ABUSE/fail` so Healthchecks.io fans out to the existing
+ *   notification channel (email / Slack / …). Only launched if the env var is set.
  *
- * Both env vars are optional. If unset, the scheduler still runs cleanups locally;
- * we just lose the external monitoring signal.
+ * All env vars are optional. If unset, the scheduler still runs the corresponding
+ * work locally (cleanup, abuse detection); we just lose the external monitoring signal.
  */
 fun Application.configureMaintenance() {
     val cleanupService: CleanupService = get()
+    val abuseDetector: AbuseDetector = get()
+    val authLogger: AuthLogger = get()
     val log = LoggerFactory.getLogger("maintenance")
 
     val hcCleanupUrl = resolveHealthcheckEnv("HC_PING_URL_CLEANUP", log)
     val hcHeartbeatUrl = resolveHealthcheckEnv("HC_PING_URL_HEARTBEAT", log)
+    val hcAbuseUrl = resolveHealthcheckEnv("HC_PING_URL_ABUSE", log)
     val pinger = HealthcheckPinger()
 
     launch {
@@ -90,6 +100,24 @@ fun Application.configureMaintenance() {
                 pinger.ping(hcHeartbeatUrl)
                 delay(5 * 60 * 1000L) // 5 min
             }
+        }
+    }
+
+    launch {
+        // Small lead-in so we don't scan an empty detector immediately at boot
+        delay(60 * 1000L)
+        while (true) {
+            val suspects = abuseDetector.suspiciousUsers()
+            suspects.forEach { authLogger.abuseSuspected(it.userId, it.ipCount) }
+            if (hcAbuseUrl != null) {
+                if (suspects.isEmpty()) {
+                    pinger.ping(hcAbuseUrl)
+                } else {
+                    val summary = suspects.joinToString(", ") { "${it.userId}=${it.ipCount}ip" }
+                    pinger.ping("$hcAbuseUrl/fail", "abuse suspects: $summary")
+                }
+            }
+            delay(5 * 60 * 1000L) // 5 min
         }
     }
 }

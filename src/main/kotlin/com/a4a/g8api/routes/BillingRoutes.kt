@@ -4,6 +4,8 @@ import com.a4a.g8api.database.ISubscriptionService
 import com.a4a.g8api.database.IUsersService
 import com.a4a.g8api.models.ErrorResponse
 import com.a4a.g8api.plugins.RateLimitNames
+import com.a4a.g8api.plugins.clientIp
+import com.a4a.g8api.services.AbuseDetector
 import io.ktor.server.plugins.ratelimit.rateLimit
 import com.stripe.Stripe
 import com.stripe.exception.StripeException
@@ -30,7 +32,8 @@ private val billingLog = LoggerFactory.getLogger("billing")
  */
 fun Route.createCheckoutSession(
     usersService: IUsersService,
-    subscriptionService: ISubscriptionService
+    subscriptionService: ISubscriptionService,
+    abuseDetector: AbuseDetector,
 ) {
     authenticate {
         rateLimit(RateLimitNames.BILLING) {
@@ -45,6 +48,7 @@ fun Route.createCheckoutSession(
                 ?: return@post call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
 
             val userId = UUID.fromString(principal.getClaim("id", String::class))
+            abuseDetector.recordHit(userId, call.clientIp())
             val user = usersService.userById(userId)
                 ?: return@post call.respond(HttpStatusCode.NotFound, ErrorResponse("User not found"))
 
@@ -118,7 +122,7 @@ fun Route.createCheckoutSession(
  * POST /v1/billing/portal-session — create Stripe Customer Portal session.
  * Per-user rate limit (5/h) — see [RateLimitNames.BILLING].
  */
-fun Route.createPortalSession(usersService: IUsersService) {
+fun Route.createPortalSession(usersService: IUsersService, abuseDetector: AbuseDetector) {
     authenticate {
         rateLimit(RateLimitNames.BILLING) {
             post("/v1/billing/portal-session") {
@@ -132,6 +136,7 @@ fun Route.createPortalSession(usersService: IUsersService) {
                 ?: return@post call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
 
             val userId = UUID.fromString(principal.getClaim("id", String::class))
+            abuseDetector.recordHit(userId, call.clientIp())
             val user = usersService.userById(userId)
                 ?: return@post call.respond(HttpStatusCode.NotFound, ErrorResponse("User not found"))
 

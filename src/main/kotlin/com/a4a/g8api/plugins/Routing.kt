@@ -5,6 +5,7 @@ import com.a4a.g8api.database.ISessionService
 import com.a4a.g8api.database.ISubscriptionService
 import com.a4a.g8api.database.IUsersService
 import com.a4a.g8api.routes.*
+import com.a4a.g8api.services.AbuseDetector
 import com.a4a.g8api.services.AuthLogger
 import com.a4a.g8api.services.EmailRateLimiter
 import com.a4a.g8api.services.EmailService
@@ -21,7 +22,8 @@ fun Application.configureRouting(
     subscriptionService: ISubscriptionService = get(),
     emailService: EmailService = get(),
     emailRateLimiter: EmailRateLimiter = get(),
-    authLogger: AuthLogger = get()
+    authLogger: AuthLogger = get(),
+    abuseDetector: AbuseDetector = get(),
 ) {
     routing {
         // Health check
@@ -52,12 +54,12 @@ fun Application.configureRouting(
         logoutAll(sessionService)
 
         // Account (authenticated)
-        getAccount(usersService, subscriptionService)
-        deleteAccount(usersService, sessionService, subscriptionService)
+        getAccount(usersService, subscriptionService, abuseDetector)
+        deleteAccount(usersService, sessionService, subscriptionService, abuseDetector)
 
         // Billing (authenticated)
-        createCheckoutSession(usersService, subscriptionService)
-        createPortalSession(usersService)
+        createCheckoutSession(usersService, subscriptionService, abuseDetector)
+        createPortalSession(usersService, abuseDetector)
 
         // Stripe webhook (public, HMAC verified). Wires in magic-link + email so
         // post-checkout signups (paid on the website without an app account) get a

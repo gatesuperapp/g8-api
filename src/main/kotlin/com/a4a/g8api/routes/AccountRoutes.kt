@@ -5,6 +5,8 @@ import com.a4a.g8api.database.ISubscriptionService
 import com.a4a.g8api.database.IUsersService
 import com.a4a.g8api.models.ErrorResponse
 import com.a4a.g8api.plugins.RateLimitNames
+import com.a4a.g8api.plugins.clientIp
+import com.a4a.g8api.services.AbuseDetector
 import io.ktor.server.plugins.ratelimit.rateLimit
 import com.stripe.Stripe
 import com.stripe.exception.StripeException
@@ -59,7 +61,11 @@ fun Route.logoutAll(sessionService: ISessionService) {
  * GET /v1/account — current user info + subscription status.
  * Per-user rate limit (60/min) — see [RateLimitNames.ACCOUNT].
  */
-fun Route.getAccount(usersService: IUsersService, subscriptionService: ISubscriptionService) {
+fun Route.getAccount(
+    usersService: IUsersService,
+    subscriptionService: ISubscriptionService,
+    abuseDetector: AbuseDetector,
+) {
     authenticate {
         rateLimit(RateLimitNames.ACCOUNT) {
             get("/v1/account") {
@@ -67,6 +73,7 @@ fun Route.getAccount(usersService: IUsersService, subscriptionService: ISubscrip
                 ?: return@get call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
 
             val userId = UUID.fromString(principal.getClaim("id", String::class))
+            abuseDetector.recordHit(userId, call.clientIp())
             val user = usersService.userById(userId)
                 ?: return@get call.respond(HttpStatusCode.NotFound, ErrorResponse("User not found"))
 
@@ -111,6 +118,7 @@ fun Route.deleteAccount(
     usersService: IUsersService,
     sessionService: ISessionService,
     subscriptionService: ISubscriptionService,
+    abuseDetector: AbuseDetector,
 ) {
     authenticate {
         rateLimit(RateLimitNames.ACCOUNT) {
@@ -119,6 +127,7 @@ fun Route.deleteAccount(
                 ?: return@delete call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Unauthorized"))
 
             val userId = UUID.fromString(principal.getClaim("id", String::class))
+            abuseDetector.recordHit(userId, call.clientIp())
             // Need the stripe customer ID before the soft-delete makes the row disappear
             // from `userById` (the query filters out `deleted_at IS NOT NULL`).
             val user = usersService.userById(userId)

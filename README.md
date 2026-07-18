@@ -48,12 +48,15 @@ Environment variables:
 | `DATABASE_URL`            | no       | JDBC URL, defaults to Postgres on localhost     |
 | `DATABASE_USER`           | no       |                                                 |
 | `DATABASE_PASSWORD`       | no       |                                                 |
-| `DATABASE_DRIVER`         | no       | Override the JDBC driver (e.g. H2 for local dev)|
+| `DATABASE_DRIVER`         | no       | Override the JDBC driver                        |
 | `STRIPE_SECRET_KEY`       | no       | Stripe routes are disabled if absent            |
 | `STRIPE_WEBHOOK_SECRET`   | no       | Required to verify webhook signatures           |
 | `STRIPE_PRICE_*`          | no       | Price IDs (monthly / yearly plans)              |
 | `SMTP_HOST` / `SMTP_PORT` | no       | Defaults to postfix on localhost:25             |
 | `EMAIL_NOOP`              | no       | `true` in tests to skip outgoing mail           |
+| `HC_PING_URL_HEARTBEAT`   | no       | Healthchecks.io ping URL (5-min liveness)       |
+| `HC_PING_URL_CLEANUP`     | no       | Healthchecks.io ping URL (24h cleanup job)      |
+| `HC_PING_URL_ABUSE`       | no       | Healthchecks.io ping URL (5-min abuse scan — pings `/fail` when a user_id shows up from ≥5 distinct IPs in 15 min) |
 
 ## Security
 

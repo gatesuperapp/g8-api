@@ -224,6 +224,18 @@ class AuthIntegrationTest {
     }
 
     @Test
+    fun `account with malformed Authorization header returns 401 not 500`() = integrationTest {
+        // Ktor 3's parseAuthorizationHeader throws BadRequestException on values
+        // that don't match RFC 7235 (e.g. a stray comma from a shell copy-paste).
+        // StatusPages must convert that to 401, not let it propagate as 500.
+        val client = jsonClient()
+        val response = client.get("/v1/account") {
+            header(HttpHeaders.Authorization, "Bearer eyJ.malformed,extra=stuff")
+        }
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+    }
+
+    @Test
     fun `account with valid JWT returns the user email`() = integrationTest {
         val tokens = signupAndConsume("accountuser@example.com")
         val client = jsonClient()
