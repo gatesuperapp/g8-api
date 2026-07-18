@@ -76,10 +76,10 @@ dependencies {
     // hood, which needs `api.version=1.44` in src/test/resources/docker-java.properties
     // to satisfy Docker Engine 27+'s minimum API version.
     testImplementation("org.testcontainers:postgresql:1.21.3")
-    implementation("org.jetbrains.exposed:exposed-core:0.61.0")
-    implementation("org.jetbrains.exposed:exposed-dao:0.61.0")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.61.0")
-    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.61.0")
+    implementation("org.jetbrains.exposed:exposed-core:1.3.1")
+    implementation("org.jetbrains.exposed:exposed-dao:1.3.1")
+    implementation("org.jetbrains.exposed:exposed-jdbc:1.3.1")
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:1.3.1")
     // Production database — read DATABASE_URL/USER/PASSWORD env vars (see application.conf).
     implementation("org.postgresql:postgresql:42.7.4")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
