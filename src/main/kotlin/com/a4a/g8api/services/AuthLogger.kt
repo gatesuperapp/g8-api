@@ -31,7 +31,7 @@ class AuthLogger {
 
     fun magicLinkRequested(email: String, ip: String, purpose: String, suppressed: Boolean) =
         emit("magic_link.requested") {
-            put("email_hash", hashEmail(email))
+            put("email_hash", hashEmailForLog(email))
             // Full IP only when the per-email rate limit kicked in — that's an abuse signal.
             put("ip", if (suppressed) ip else truncateIp(ip))
             put("purpose", purpose)
@@ -125,11 +125,20 @@ class AuthLogger {
             fields()
         }.toString()
 
-    private fun hashEmail(email: String): String {
-        val normalized = email.lowercase().trim()
-        val digest = MessageDigest.getInstance("SHA-256").digest(normalized.toByteArray())
-        return digest.joinToString("") { "%02x".format(it) }.take(16)
-    }
+}
+
+/**
+ * 16-hex-char prefix of SHA-256(lowercase(trim(email))). Enough to correlate
+ * the same mailbox across records without persisting the address itself, and
+ * short enough to keep log lines readable.
+ *
+ * Kept top-level so both [AuthLogger] and any service that needs to reference
+ * an email in a general (non-security) log line share exactly the same shape.
+ */
+internal fun hashEmailForLog(email: String): String {
+    val normalized = email.lowercase().trim()
+    val digest = MessageDigest.getInstance("SHA-256").digest(normalized.toByteArray())
+    return digest.joinToString("") { "%02x".format(it) }.take(16)
 }
 
 /**

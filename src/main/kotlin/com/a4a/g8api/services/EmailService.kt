@@ -43,7 +43,10 @@ class EmailService(
             Transport.send(message)
             true
         } catch (e: Exception) {
-            log.error("Failed to send email to $to", e)
+            // Hash the recipient so this error line does not leak raw addresses into
+            // journald — AuthLogger already anonymises emails in security events, and
+            // an SMTP failure record has no reason to be looser about PII.
+            log.error("Failed to send email (recipient_hash=${hashEmailForLog(to)})", e)
             false
         }
     }
