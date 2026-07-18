@@ -5,8 +5,8 @@ accounts, Stripe-based subscriptions.
 
 ## Stack
 
-- **Kotlin 1.9.22** / **Ktor 2.3.7** (Netty), JVM 17
-- **PostgreSQL** in production via **Exposed** + **HikariCP** (in-memory H2 for tests)
+- **Kotlin 2.3.21** / **Ktor 3.5.1** (Netty), JVM 17
+- **PostgreSQL** in production via **Exposed** + **HikariCP** (Postgres via **Testcontainers** for tests — matches prod dialect)
 - **Koin** for DI
 - **Stripe** SDK for Checkout, Portal and webhooks
 - Gradle Kotlin DSL build → fat JAR via the Ktor plugin
@@ -35,7 +35,7 @@ presented again, every session for that user is revoked.
 ## Build & run locally
 
 ```bash
-./gradlew test                    # tests (in-memory H2, no real SMTP)
+./gradlew test                    # tests (Postgres via Testcontainers, no real SMTP — needs Docker)
 ./gradlew buildFatJar             # JAR → build/libs/g8-api.jar
 JWT_SECRET=dev-secret-only ./gradlew run
 ```
