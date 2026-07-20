@@ -5,9 +5,9 @@ val koinKtor_version: String by project
 val hikaricp_version: String by project
 
 plugins {
-    kotlin("jvm") version "2.3.21"
+    kotlin("jvm") version "2.4.10"
     id("io.ktor.plugin") version "3.5.1"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.3.21"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.4.10"
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -65,14 +65,14 @@ dependencies {
     // so the test schema/dialect matches production. Uses docker-java 3.4.2 under the
     // hood, which needs `api.version=1.44` in src/test/resources/docker-java.properties
     // to satisfy Docker Engine 27+'s minimum API version.
-    testImplementation("org.testcontainers:postgresql:1.21.3")
+    testImplementation("org.testcontainers:postgresql:1.21.4")
     implementation("org.jetbrains.exposed:exposed-core:0.61.0")
     implementation("org.jetbrains.exposed:exposed-dao:0.61.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.61.0")
     implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.61.0")
     // Production database — read DATABASE_URL/USER/PASSWORD env vars (see application.conf).
-    implementation("org.postgresql:postgresql:42.7.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
+    implementation("org.postgresql:postgresql:42.7.13")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.8.0")
     // Dependency Injection
     //Enables external provisioning of component dependencies, fostering modularity and flexibility in development.
     implementation("io.insert-koin:koin-ktor:$koinKtor_version")
@@ -82,7 +82,7 @@ dependencies {
     // Stripe
     implementation("com.stripe:stripe-java:26.1.0")
     // Mail (SMTP via Postfix on localhost)
-    implementation("com.sun.mail:jakarta.mail:2.0.1")
+    implementation("com.sun.mail:jakarta.mail:2.0.2")
 }
 
 
